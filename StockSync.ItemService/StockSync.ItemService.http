@@ -1,0 +1,6 @@
+@StockSync.ItemService_HostAddress = http://localhost:5069
+
+GET {{StockSync.ItemService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
