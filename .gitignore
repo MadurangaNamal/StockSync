@@ -417,7 +417,3 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
-# Environment variables
-.env
-.env.local
-.env.*.local
