@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 using StockSync.ItemService.Data;
 using StockSync.ItemService.Entities;
 
@@ -13,43 +14,28 @@ public class ItemServiceRepository : IItemServiceRepository
         _dbContext = context;
     }
 
+    public async Task<Item?> GetItemByIdAsync(string id)
+    {
+        return await _dbContext.Items.AsNoTracking().FirstOrDefaultAsync(item => item.Id == id);
+    }
+
+    public async Task<IEnumerable<Item>> GetAllItemsAsync()
+    {
+        return await _dbContext.Items.AsNoTracking().ToListAsync();
+    }
+
     public async Task<Item> CreateItemAsync(Item item)
     {
         item.CreatedAt = DateTime.UtcNow;
         item.UpdatedAt = DateTime.UtcNow;
 
+        if (string.IsNullOrEmpty(item.Id))
+            item.Id = ObjectId.GenerateNewId().ToString();
+
         _dbContext.Items.Add(item);
 
         await _dbContext.SaveChangesAsync();
         return item;
-    }
-
-    public async Task<bool> DeleteItemAsync(string id)
-    {
-        var item = await _dbContext.Items.FindAsync(id);
-
-        if (item == null)
-            return false;
-
-        _dbContext.Items.Remove(item);
-
-        await _dbContext.SaveChangesAsync();
-        return true;
-    }
-
-    public async Task<IEnumerable<Item>> GetAllItemsAsync()
-    {
-        return await _dbContext.Items.ToListAsync();
-    }
-
-    public async Task<Item?> GetItemByIdAsync(string id)
-    {
-        return await _dbContext.Items.FindAsync(id);
-    }
-
-    public async Task<bool> ItemExistsAsync(string id)
-    {
-        return await _dbContext.Items.AnyAsync(i => i.Id == id);
     }
 
     public async Task<Item> UpdateItemAsync(string id, Item item)
@@ -67,5 +53,23 @@ public class ItemServiceRepository : IItemServiceRepository
 
         await _dbContext.SaveChangesAsync();
         return existingItem;
+    }
+
+    public async Task<bool> DeleteItemAsync(string id)
+    {
+        var item = await _dbContext.Items.FindAsync(id);
+
+        if (item == null)
+            return false;
+
+        _dbContext.Items.Remove(item);
+
+        await _dbContext.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> ItemExistsAsync(string id)
+    {
+        return await _dbContext.Items.AnyAsync(i => i.Id == id);
     }
 }
