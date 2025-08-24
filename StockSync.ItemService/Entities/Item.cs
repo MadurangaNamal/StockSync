@@ -8,11 +8,11 @@ public class Item
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? Id { get; set; }
+    public string Id { get; set; } = default!;
 
     [Required]
     [MaxLength(150)]
-    public string Name { get; set; } = string.Empty;
+    public string Name { get; set; } = default!;
 
     [MaxLength(1000)]
     public string Description { get; set; } = string.Empty;

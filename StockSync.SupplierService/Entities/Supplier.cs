@@ -9,16 +9,19 @@ public class Supplier
     public int SupplierId { get; set; }
 
     [Required]
-    public string Name { get; set; } = string.Empty;
-
-    [EmailAddress]
-    public string ContactEmail { get; set; } = string.Empty;
-
-    [Phone]
-    public string ContactPhone { get; set; } = string.Empty;
+    public string Name { get; set; } = default!;
 
     [Required]
-    public string Address { get; set; } = string.Empty;
+    [EmailAddress]
+    public string ContactEmail { get; set; } = default!;
+
+    [Required]
+    [Phone]
+    public string ContactPhone { get; set; } = default!;
+
+    [Required]
+    [MaxLength(1000)]
+    public string Address { get; set; } = default!;
 
     public string? City { get; set; }
 

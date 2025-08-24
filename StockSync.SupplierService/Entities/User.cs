@@ -10,9 +10,9 @@ public class User
 
     [Required]
     [MaxLength(100)]
-    public string Username { get; set; } = string.Empty;
+    public string Username { get; set; } = default!;
 
-    public string PasswordHash { get; set; } = string.Empty;
+    public string? PasswordHash { get; set; }
 
     public string Role { get; set; } = UserRoles.User;
 }
