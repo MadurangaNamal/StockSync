@@ -5,8 +5,13 @@ namespace StockSync.SupplierService.Models.UserIdentity;
 public class LoginModel
 {
     [Required]
-    public string Username { get; set; } = string.Empty;
+    [MinLength(3)]
+    [MaxLength(100)]
+    public string Username { get; set; } = default!;
 
     [Required]
-    public string Password { get; set; } = string.Empty;
+    [MinLength(8)]
+    [DataType(DataType.Password)]
+    public string Password { get; set; } = default!;
 }
+
