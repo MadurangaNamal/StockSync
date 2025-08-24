@@ -1,4 +1,4 @@
-﻿using StockSync.SupplierService.Models;
+﻿using StockSync.SupplierService.Models.UserIdentity;
 using System.ComponentModel.DataAnnotations;
 
 namespace StockSync.SupplierService.Entities;
