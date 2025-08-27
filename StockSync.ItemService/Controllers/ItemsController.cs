@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StockSync.ItemService.Entities;
 using StockSync.ItemService.Infrastructure;
 using StockSync.ItemService.Models;
+using StockSync.SupplierService.Models.UserIdentity;
 
 namespace StockSync.ItemService.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ItemsController : ControllerBase
@@ -47,6 +50,7 @@ public class ItemsController : ControllerBase
         return CreatedAtRoute("GetItem", new { id = itemToReturn.Id }, itemToReturn);
     }
 
+    [Authorize(Roles = UserRoles.Admin)]
     [HttpPut("{id}")]
     public async Task<ActionResult<ItemDto>> UpdateItem(string id, ItemManipulationDto itemDto)
     {
@@ -58,6 +62,7 @@ public class ItemsController : ControllerBase
         return Ok(_mapper.Map<ItemDto>(updatedItem));
     }
 
+    [Authorize(Roles = UserRoles.Admin)]
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteItem(string id)
     {
