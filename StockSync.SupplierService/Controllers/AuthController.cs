@@ -26,7 +26,7 @@ public class AuthController : ControllerBase
     [HttpGet("{userId}", Name = "GetUser")]
     public async Task<ActionResult<User>> GetUserById(string userId)
     {
-        var user = await _dbContext.Users.FindAsync(userId);
+        var user = await _dbContext.Users.FindAsync(int.Parse(userId));
         if (user == null)
         {
             return NotFound(new ProblemDetails
