@@ -1,6 +1,6 @@
 ﻿namespace StockSync.SupplierService.Models.UserIdentity;
 
-public class RegisterModel : LoginModel
+public class RegisterUserModel : LoginModel
 {
     public string Role { get; set; } = UserRoles.User;
 }
