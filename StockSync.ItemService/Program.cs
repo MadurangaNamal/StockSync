@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StockSync.ItemService.Data;
 using StockSync.ItemService.Infrastructure;
-using StockSync.SupplierService.Models.UserIdentity;
+using StockSync.Shared;
 using System.Text;
 using System.Text.Json;
 

@@ -1,4 +1,4 @@
-﻿namespace StockSync.SupplierService.Models.UserIdentity;
+﻿namespace StockSync.Shared;
 
 public class UserRoles
 {

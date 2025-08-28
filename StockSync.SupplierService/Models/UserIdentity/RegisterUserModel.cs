@@ -1,4 +1,6 @@
-﻿namespace StockSync.SupplierService.Models.UserIdentity;
+﻿using StockSync.Shared;
+
+namespace StockSync.SupplierService.Models.UserIdentity;
 
 public class RegisterUserModel : LoginModel
 {

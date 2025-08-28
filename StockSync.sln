@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockSync.ItemService", "St
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockSync.Shared", "StockSync.Shared\StockSync.Shared.csproj", "{BEF8B80D-A705-40CD-8AC5-F191806EF49B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{07A19BD5-25D4-4872-B5CC-D9C0AAAF17D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07A19BD5-25D4-4872-B5CC-D9C0AAAF17D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07A19BD5-25D4-4872-B5CC-D9C0AAAF17D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEF8B80D-A705-40CD-8AC5-F191806EF49B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEF8B80D-A705-40CD-8AC5-F191806EF49B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEF8B80D-A705-40CD-8AC5-F191806EF49B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEF8B80D-A705-40CD-8AC5-F191806EF49B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
