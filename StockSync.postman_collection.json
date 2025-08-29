@@ -184,7 +184,108 @@
 		},
 		{
 			"name": "Supplier Service",
-			"item": []
+			"item": [
+				{
+					"name": "Get all suppliers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdCIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJleHAiOjE3NTY0NTcxMDIsImlzcyI6IlN0b2NrU3luYyIsImF1ZCI6IlN0b2NrU3luY0FQSSJ9.4NGQ8xj6LA2ysJ9eFrz8JLHqD5pFK449JO47JOONfJ4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7276/api/suppliers",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7276",
+							"path": [
+								"api",
+								"suppliers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get supplier details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdCIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJleHAiOjE3NTY0NTcxMDIsImlzcyI6IlN0b2NrU3luYyIsImF1ZCI6IlN0b2NrU3luY0FQSSJ9.4NGQ8xj6LA2ysJ9eFrz8JLHqD5pFK449JO47JOONfJ4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7276/api/suppliers/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7276",
+							"path": [
+								"api",
+								"suppliers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add new supplier",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiTWFkdXJhbmdhIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJleHAiOjE3NTY0NTcyNDgsImlzcyI6IlN0b2NrU3luYyIsImF1ZCI6IlN0b2NrU3luY0FQSSJ9.zqaoyC0iQLXAoDNo7x2BkcKPusZyR4sTOc73srZ9MPo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Nesto Corp\",\r\n  \"contactEmail\": \"nesto@gmail.com\",\r\n  \"contactPhone\": \"0525027777\",\r\n  \"address\": \"No.101, Al shiham st\",\r\n  \"city\": \"Al Nahda\",\r\n  \"state\": \"Dubai\",\r\n  \"zipCode\": \"12345\",\r\n  \"country\": \"UAE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7276/api/suppliers",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7276",
+							"path": [
+								"api",
+								"suppliers"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "User Identity",
