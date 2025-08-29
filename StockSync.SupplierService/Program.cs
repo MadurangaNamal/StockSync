@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StockSync.Shared;
 using StockSync.SupplierService.Data;
+using StockSync.SupplierService.Infrastructure;
 using System.Text;
 using System.Text.Json;
 
@@ -33,9 +34,8 @@ var tokenValidationParameters = new TokenValidationParameters
     ClockSkew = TimeSpan.Zero,
 };
 
-builder.Services.AddDbContext<SupplierServiceDBContext>(
-    options => options.UseSqlServer(connectionString));
-
+builder.Services.AddScoped<ISupplierServiceRepository, SupplierServiceRepository>();
+builder.Services.AddDbContext<SupplierServiceDBContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddSingleton(tokenValidationParameters);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
