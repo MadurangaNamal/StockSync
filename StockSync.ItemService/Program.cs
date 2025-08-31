@@ -3,11 +3,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StockSync.ItemService.Data;
 using StockSync.ItemService.Infrastructure;
-using StockSync.Shared;
+using StockSync.Shared.Middlewares;
+using StockSync.Shared.Models;
 using System.Text;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Serilog
+builder.ConfigureSerilog();
+builder.Configuration.AddUserSecrets<Program>();
 
 // Add services to the container.
 var mongoConn = builder.Configuration["MongoDB:ConnectionURI"]
@@ -102,6 +107,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRequestResponseLogging();
 app.MapControllers();
 
 app.Run();

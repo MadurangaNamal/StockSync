@@ -1,4 +1,4 @@
-﻿using StockSync.Shared;
+﻿using StockSync.Shared.Models;
 
 namespace StockSync.SupplierService.Models.UserIdentity;
 

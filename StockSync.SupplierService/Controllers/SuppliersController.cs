@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using StockSync.Shared;
+using StockSync.Shared.Models;
 using StockSync.SupplierService.Entities;
 using StockSync.SupplierService.Infrastructure;
 using StockSync.SupplierService.Models;

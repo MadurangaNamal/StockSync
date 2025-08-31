@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using StockSync.Shared;
+using StockSync.Shared.Middlewares;
+using StockSync.Shared.Models;
 using StockSync.SupplierService.Data;
 using StockSync.SupplierService.Infrastructure;
 using System.Text;
@@ -9,15 +10,16 @@ using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure Serilog
+builder.ConfigureSerilog();
+
 // Add services to the container.
 builder.Configuration.AddUserSecrets<Program>();
 
 var rawConnectionString = builder.Configuration.GetConnectionString("StockSyncDBConnection")
     ?? throw new InvalidOperationException("Connection string 'StockSyncDBConnection' not found.");
-
 var dbPassword = builder.Configuration["DB_PASSWORD"]
     ?? throw new InvalidOperationException("Database password not found in configuration.");
-
 var jwtSecretKey = builder.Configuration["JWT_SECRET_KEY"]
     ?? throw new InvalidOperationException("JWT secret key not found in configuration.");
 
@@ -107,6 +109,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRequestResponseLogging();
 app.MapControllers();
 
 app.Run();

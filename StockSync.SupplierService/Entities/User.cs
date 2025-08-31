@@ -1,4 +1,4 @@
-﻿using StockSync.Shared;
+﻿using StockSync.Shared.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace StockSync.SupplierService.Entities;
