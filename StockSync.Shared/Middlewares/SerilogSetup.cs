@@ -11,12 +11,12 @@ public static class SerilogSetup
 {
     /// <summary>
     /// Configures Serilog as the logging provider for the application.
-    /// Reads configuration from appsettings.json and sets up the logger with context enrichment.
+    /// Reads configuration from appsettings and sets up the logger with context enrichment.
     /// </summary>
     /// <param name="builder">The WebApplicationBuilder instance</param>
     public static void ConfigureSerilog(this WebApplicationBuilder builder)
     {
-        // Configure Serilog logger using settings from appsettings.json
+        // Configure Serilog logger using settings
         Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(builder.Configuration)
             .Enrich.FromLogContext()
