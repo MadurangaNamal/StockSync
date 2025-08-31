@@ -12,8 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Configure Serilog
 builder.ConfigureSerilog();
-
-// Add services to the container.
 builder.Configuration.AddUserSecrets<Program>();
 
 var rawConnectionString = builder.Configuration.GetConnectionString("StockSyncDBConnection")
@@ -22,7 +20,6 @@ var dbPassword = builder.Configuration["DB_PASSWORD"]
     ?? throw new InvalidOperationException("Database password not found in configuration.");
 var jwtSecretKey = builder.Configuration["JWT_SECRET_KEY"]
     ?? throw new InvalidOperationException("JWT secret key not found in configuration.");
-
 var connectionString = rawConnectionString.Replace("{DB_PASSWORD}", dbPassword);
 var tokenValidationParameters = new TokenValidationParameters
 {
@@ -36,6 +33,7 @@ var tokenValidationParameters = new TokenValidationParameters
     ClockSkew = TimeSpan.Zero,
 };
 
+//  Add Services to the container
 builder.Services.AddScoped<ISupplierServiceRepository, SupplierServiceRepository>();
 builder.Services.AddDbContext<SupplierServiceDBContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddSingleton(tokenValidationParameters);

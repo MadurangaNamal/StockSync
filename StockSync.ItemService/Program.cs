@@ -14,14 +14,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureSerilog();
 builder.Configuration.AddUserSecrets<Program>();
 
-// Add services to the container.
 var mongoConn = builder.Configuration["MongoDB:ConnectionURI"]
     ?? throw new InvalidOperationException("MongoDB connection string is not configured.");
 var dbName = builder.Configuration["MongoDB:DatabaseName"]
     ?? throw new InvalidOperationException("MongoDB database name is not configured.");
 var jwtSecretKey = builder.Configuration["JWT_SECRET_KEY"]
     ?? throw new InvalidOperationException("JWT secret key not found in configuration.");
-
 var tokenValidationParameters = new TokenValidationParameters
 {
     ValidateIssuer = true,
@@ -34,6 +32,7 @@ var tokenValidationParameters = new TokenValidationParameters
     ClockSkew = TimeSpan.Zero,
 };
 
+//  Add Services to the container
 builder.Services.AddDbContext<ItemServiceDBContext>(options => options.UseMongoDB(mongoConn, dbName));
 builder.Services.AddSingleton(tokenValidationParameters);
 builder.Services.AddScoped<IItemServiceRepository, ItemServiceRepository>();
