@@ -5,12 +5,13 @@ services:
     build:
       context: .
       dockerfile: StockSync.SupplierService/Dockerfile
+    env_file:
+      - .env
     ports:
       - "5001:80"
-      - "5002:443"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__StockSyncDBConnection=Server=sql-server;Database=StockSyncDB;User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=True;
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - Jwt__Issuer=StockSyncAPI
@@ -24,12 +25,13 @@ services:
     build:
       context: .
       dockerfile: StockSync.ItemService/Dockerfile
+    env_file:
+      - .env
     ports:
-      - "5003:80"
-      - "5004:443"
+      - "5002:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_URLS=http://+:80
       - MongoDB__ConnectionURI=mongodb://mongodb:27017
       - MongoDB__DatabaseName=StockSyncItemsDB
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
