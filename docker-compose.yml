@@ -12,7 +12,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__StockSyncDBConnection=Server=sql-server;Database=StockSyncDB;User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=True;
+      - ConnectionStrings__StockSyncDBConnection=Server=sql-server;Database=StockSyncDB;User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=True;ConnectRetryCount=5;ConnectRetryInterval=10;
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - Jwt__Issuer=StockSyncAPI
       - Jwt__Audience=StockSyncClient
