@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  supplier-service:
+    build:
+      context: .
+      dockerfile: StockSync.SupplierService/Dockerfile
+    ports:
+      - "5001:80"
+      - "5002:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ConnectionStrings__StockSyncDBConnection=Server=sql-server;Database=StockSyncDB;User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=True;
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - Jwt__Issuer=StockSyncAPI
+      - Jwt__Audience=StockSyncClient
+    depends_on:
+      - sql-server
+    networks:
+      - stocksync-network
+
+  item-service:
+    build:
+      context: .
+      dockerfile: StockSync.ItemService/Dockerfile
+    ports:
+      - "5003:80"
+      - "5004:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - MongoDB__ConnectionURI=mongodb://mongodb:27017
+      - MongoDB__DatabaseName=StockSyncItemsDB
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - Jwt__Issuer=StockSyncAPI
+      - Jwt__Audience=StockSyncClient
+    depends_on:
+      - mongodb
+    networks:
+      - stocksync-network
+
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - stocksync-network
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - stocksync-network
+
+volumes:
+  sqlserver_data:
+  mongodb_data:
+
+networks:
+  stocksync-network:
+    driver: bridge
