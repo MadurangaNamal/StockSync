@@ -107,6 +107,7 @@ else
     app.UseHttpsRedirection();
 }
 
+app.UseGlobalExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseRequestResponseLogging();
