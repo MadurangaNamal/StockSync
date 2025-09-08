@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel.DataAnnotations;
 
 namespace StockSync.SupplierService.Entities;
@@ -30,4 +31,7 @@ public class Supplier
     public string? ZipCode { get; set; }
 
     public string? Country { get; set; }
+
+    [BsonIgnore]
+    public List<string>? Items { get; set; }
 }

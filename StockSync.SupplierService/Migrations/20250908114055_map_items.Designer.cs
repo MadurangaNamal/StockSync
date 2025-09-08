@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StockSync.SupplierService.Data;
 
@@ -10,9 +11,11 @@ using StockSync.SupplierService.Data;
 namespace StockSync.SupplierService.Migrations
 {
     [DbContext(typeof(SupplierServiceDBContext))]
-    partial class SupplierServiceDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250908114055_map_items")]
+    partial class map_items
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
