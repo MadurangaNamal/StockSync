@@ -23,9 +23,9 @@ public class ItemsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ItemDto>>> GetItems()
+    public async Task<ActionResult<IEnumerable<ItemDto>>> GetItems([FromQuery] string? itemIds = null)
     {
-        var items = await _repository.GetAllItemsAsync();
+        var items = await _repository.GetAllItemsAsync(itemIds);
         return Ok(_mapper.Map<IEnumerable<ItemDto>>(items));
     }
 

@@ -19,8 +19,14 @@ public class ItemServiceRepository : IItemServiceRepository
         return await _dbContext.Items.AsNoTracking().FirstOrDefaultAsync(item => item.Id == id);
     }
 
-    public async Task<IEnumerable<Item>> GetAllItemsAsync()
+    public async Task<IEnumerable<Item>> GetAllItemsAsync(string? itemIds)
     {
+        if (!string.IsNullOrEmpty(itemIds))
+        {
+            var ids = itemIds.Split(',').Select(id => id.Trim()).ToList();
+            return await _dbContext.Items.AsNoTracking().Where(item => ids.Contains(item.Id)).ToListAsync();
+        }
+
         return await _dbContext.Items.AsNoTracking().ToListAsync();
     }
 
