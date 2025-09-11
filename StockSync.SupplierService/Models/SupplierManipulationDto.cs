@@ -8,4 +8,5 @@ public record SupplierManipulationDto(
     string? City,
     string? State,
     string? ZipCode,
-    string? Country);
+    string? Country,
+    List<string>? Items = null);

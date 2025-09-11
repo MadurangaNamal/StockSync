@@ -9,4 +9,5 @@ public record SupplierDto(
     string? City,
     string? State,
     string? ZipCode,
-    string? Country);
+    string? Country,
+    List<ItemDto>? Items);
