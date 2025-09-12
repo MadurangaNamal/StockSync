@@ -7,6 +7,7 @@ using StockSync.Shared.Middlewares;
 using StockSync.Shared.Models;
 using StockSync.SupplierService.Data;
 using StockSync.SupplierService.Infrastructure;
+using StockSync.SupplierService.Services;
 using System.Text;
 using System.Text.Json;
 
@@ -36,8 +37,12 @@ var tokenValidationParameters = new TokenValidationParameters
 };
 
 //  Add Services to the container
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<ISupplierServiceRepository, SupplierServiceRepository>();
+builder.Services.AddScoped<SupplierSyncService>();
 builder.Services.AddDbContext<SupplierServiceDBContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddHttpClient();
 builder.Services.AddSingleton(tokenValidationParameters);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -150,5 +155,11 @@ app.UseAuthorization();
 app.UseRequestResponseLogging();
 app.UseHangfireDashboard("/hangfire");
 app.MapControllers();
+
+// Schedule a recurring job for supplier-Item sync
+RecurringJob.AddOrUpdate<SupplierSyncService>(
+    "sync-suppliers",
+   service => service.SyncAllSuppliers(),
+   Cron.MinuteInterval(45));
 
 app.Run();
