@@ -49,7 +49,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(cfg => { }, typeof(Program));
-builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddHangfire(config => config.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
           .UseSimpleAssemblyNameTypeSerializer()
@@ -116,6 +115,7 @@ builder.Services.AddAuthorization(options =>
         options.AddPolicy("RequireUserRole", policy => policy.RequireRole(UserRoles.User));
     });
 
+
 var app = builder.Build();
 
 try
@@ -158,10 +158,10 @@ app.UseRequestResponseLogging();
 app.UseHangfireDashboard("/hangfire");
 app.MapControllers();
 
-// Schedule a recurring job for supplier-Item sync
+// Schedule a recurring job for suppliers-Items syncing
 RecurringJob.AddOrUpdate<SupplierSyncService>(
     "sync-suppliers",
    service => service.SyncAllSuppliers(),
-   Cron.MinuteInterval(45));
+   Cron.Minutely); // configure the sync interval as necessary
 
 app.Run();

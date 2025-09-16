@@ -15,29 +15,73 @@ public class SuppliersController : ControllerBase
 {
     private readonly ISupplierServiceRepository _repository;
     private readonly IMapper _mapper;
+    private readonly ICacheService _cacheService;
 
-    public SuppliersController(ISupplierServiceRepository repository, IMapper mapper)
+    public SuppliersController(ISupplierServiceRepository repository, IMapper mapper, ICacheService cacheService)
     {
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _cacheService = cacheService ?? throw new ArgumentNullException(nameof(cacheService));
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<SupplierDto>>> GetAllSuppliers()
     {
-        var suppliers = await _repository.GetSuppliersAsync() ?? [];
-        return Ok(_mapper.Map<IEnumerable<SupplierDto>>(suppliers));
+        var allSuppliers = await _repository.GetSuppliersAsync() ?? [];
+        var supplierDtos = new List<SupplierDto>();
+
+        foreach (var supplier in allSuppliers)
+        {
+            var itemDtos = (supplier.Items ?? new List<string>())
+                .Select(id => _cacheService.GetItemDto(id))
+                .Where(item => item != null)
+                .ToList();
+
+            var dto = new SupplierDto(
+                supplier.SupplierId,
+                supplier.Name,
+                supplier.ContactEmail,
+                supplier.ContactPhone,
+                supplier.Address,
+                supplier.City,
+                supplier.State,
+                supplier.ZipCode,
+                supplier.Country,
+                itemDtos!
+            );
+
+            supplierDtos.Add(dto);
+        }
+
+        return Ok(supplierDtos);
     }
 
     [HttpGet("{id}", Name = "GetSupplierById")]
     public async Task<ActionResult<SupplierDto>> GetSupplierById(string id)
     {
-        var supplier = await _repository.GetSupplierAsync(int.Parse(id));
+        if (!int.TryParse(id, out int supplierId))
+        {
+            return BadRequest($"Invalid supplier id format: {id}");
+        }
+
+        var supplier = await _repository.GetSupplierAsync(supplierId);
 
         if (supplier == null)
             return NotFound($"Supplier with id: {id} not found");
 
-        return Ok(_mapper.Map<SupplierDto>(supplier));
+        var supplierDto = _mapper.Map<SupplierDto>(supplier);
+
+        if (supplier.Items?.Any() == true)
+        {
+            var itemDtos = supplier.Items
+                .Select(itemId => _cacheService.GetItemDto(itemId))
+                .Where(item => item != null)
+                .ToList();
+
+            supplierDto.Items = itemDtos!;
+        }
+
+        return Ok(supplierDto);
     }
 
     [Authorize(Roles = UserRoles.Admin)]

@@ -16,17 +16,17 @@ public class SupplierSyncService
     private readonly SupplierServiceDBContext _dbContext;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfiguration _configuration;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ICacheService _cacheService;
 
     public SupplierSyncService(SupplierServiceDBContext dbContext,
         IHttpClientFactory httpClientFactory,
         IConfiguration configuration,
-        IHttpContextAccessor httpContextAccessor)
+        ICacheService cacheService)
     {
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-        _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+        _cacheService = cacheService ?? throw new ArgumentNullException(nameof(cacheService));
     }
 
     public async Task SyncSupplierItems(int supplierId)
@@ -57,15 +57,9 @@ public class SupplierSyncService
                     {
                         // Update supplier.Items with valid IDs
                         supplier.Items = items.Select(i => i.Id).ToList();
-
-                        // Cache the full ItemDtos
-                        var cache = _httpContextAccessor.HttpContext?.RequestServices.GetRequiredService<ICacheService>();
-
-                        if (cache == null)
-                            throw new InvalidOperationException("ICacheService not available from RequestServices.");
-
                         var itemDict = items.ToDictionary(i => i.Id, i => i);
-                        cache.SetAllItemDtos(itemDict, TimeSpan.FromHours(1));
+
+                        _cacheService.SetAllItemDtos(itemDict, TimeSpan.FromHours(1));
                     }
 
                     await _dbContext.SaveChangesAsync();
