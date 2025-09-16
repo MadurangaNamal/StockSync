@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using StockSync.Shared.Models;
 using StockSync.SupplierService.Data;
 using StockSync.SupplierService.Entities;
 using StockSync.SupplierService.Models.UserIdentity;
@@ -23,6 +25,7 @@ public class AuthController : ControllerBase
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
     }
 
+    [Authorize(Roles = UserRoles.Admin)]
     [HttpGet("{userId}", Name = "GetUser")]
     public async Task<ActionResult<User>> GetUserById(string userId)
     {
