@@ -46,10 +46,9 @@ public class SuppliersController : ControllerBase
                 supplier.City,
                 supplier.State,
                 supplier.ZipCode,
-                supplier.Country,
-                itemDtos!
-            );
+                supplier.Country);
 
+            dto.Items = itemDtos!;
             supplierDtos.Add(dto);
         }
 

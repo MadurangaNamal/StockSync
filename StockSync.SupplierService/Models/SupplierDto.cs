@@ -21,8 +21,7 @@ public class SupplierDto
         string? city,
         string? state,
         string? zipCode,
-        string? country,
-        List<ItemDto>? items)
+        string? country)
     {
         SupplierId = supplierId;
         Name = name;
@@ -33,7 +32,6 @@ public class SupplierDto
         State = state;
         ZipCode = zipCode;
         Country = country;
-        Items = items;
     }
 }
 
