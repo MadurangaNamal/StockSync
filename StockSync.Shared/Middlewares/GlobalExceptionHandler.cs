@@ -29,13 +29,21 @@ public class GlobalExceptionHandler
             context.Response.StatusCode = 500;
             context.Response.ContentType = "application/json";
 
-            var response = new ProblemDetails
+            var errorResponse = new ProblemDetails
             {
                 Status = 500,
                 Detail = "An unexpected error occurred. Please try again later."
             };
 
-            await context.Response.WriteAsJsonAsync(response);
+            if (!context.Response.HasStarted)
+            {
+                await context.Response.WriteAsJsonAsync(errorResponse);
+            }
+            else
+            {
+                // Log the error but avoid writing to a closed stream
+                Serilog.Log.Error(ex, "Unhandled exception occurred.");
+            }
         }
     }
 }
