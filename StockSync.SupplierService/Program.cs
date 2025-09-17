@@ -158,10 +158,13 @@ app.UseRequestResponseLogging();
 app.UseHangfireDashboard("/hangfire");
 app.MapControllers();
 
-// Schedule a recurring job for suppliers-Items syncing
+// Schedule the recurring job 
 RecurringJob.AddOrUpdate<SupplierSyncService>(
     "sync-suppliers",
-   service => service.SyncAllSuppliers(),
-   Cron.Minutely); // configure the sync interval as necessary
+    service => service.SyncAllSuppliers(),
+    "*/10 * * * *");
+
+// Trigger it once immediately on startup
+BackgroundJob.Enqueue<SupplierSyncService>(service => service.SyncAllSuppliers());
 
 app.Run();

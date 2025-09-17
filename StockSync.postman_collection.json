@@ -17,7 +17,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdCIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJleHAiOjE3NTY5NzgyNjcsImlzcyI6IlN0b2NrU3luYyIsImF1ZCI6IlN0b2NrU3luY0FQSSJ9.qZLLQuSTVv66ZSubLfA2CGnFIzQq9ClM51Va7BAH-b4",
+									"value": "{{adminTokenStockSync}}",
 									"type": "string"
 								}
 							]
@@ -77,7 +77,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdCIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJleHAiOjE3NTYyOTMyMzQsImlzcyI6IlN0b2NrU3luYyIsImF1ZCI6IlN0b2NrU3luY0FQSSJ9.JNzbD2e_kZU2PjyP-i2rQPguP9spsF2Y-knvEa6Oe0Q",
+									"value": "{{adminTokenStockSync}}",
 									"type": "string"
 								}
 							]
@@ -108,7 +108,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdCIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJleHAiOjE3NTYyOTgwNDAsImlzcyI6IlN0b2NrU3luYyIsImF1ZCI6IlN0b2NrU3luY0FQSSJ9.LfTh5aexm3xEj3nleNT5XIvBMuY2uuLUS9Mim3P6VL4",
+									"value": "{{adminTokenStockSync}}",
 									"type": "string"
 								}
 							]
@@ -147,7 +147,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiTWFkdXJhbmdhIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJleHAiOjE3NTYyOTgzMjcsImlzcyI6IlN0b2NrU3luYyIsImF1ZCI6IlN0b2NrU3luY0FQSSJ9.RdL9XxtPtskPjPx_K-ir0EQLSISNm7nPuZ5VGOMpjsc",
+									"value": "{{adminTokenStockSync}}",
 									"type": "string"
 								}
 							]
@@ -187,7 +187,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiTWFkdXJhbmdhIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJleHAiOjE3NTYyOTgzMjcsImlzcyI6IlN0b2NrU3luYyIsImF1ZCI6IlN0b2NrU3luY0FQSSJ9.RdL9XxtPtskPjPx_K-ir0EQLSISNm7nPuZ5VGOMpjsc",
+									"value": "{{adminTokenStockSync}}",
 									"type": "string"
 								}
 							]
@@ -223,7 +223,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiTWFkdXJhbmdhIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJleHAiOjE3NTY5NzgzMTQsImlzcyI6IlN0b2NrU3luYyIsImF1ZCI6IlN0b2NrU3luY0FQSSJ9.n1TkWPAIEqniXNURo8yhgsQghSd9OmYgTM1jMAM54NY",
+									"value": "{{adminTokenStockSync}}",
 									"type": "string"
 								}
 							]
@@ -253,7 +253,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdCIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJleHAiOjE3NTY0NTcxMDIsImlzcyI6IlN0b2NrU3luYyIsImF1ZCI6IlN0b2NrU3luY0FQSSJ9.4NGQ8xj6LA2ysJ9eFrz8JLHqD5pFK449JO47JOONfJ4",
+									"value": "{{adminTokenStockSync}}",
 									"type": "string"
 								}
 							]
@@ -284,7 +284,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiTWFkdXJhbmdhIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJleHAiOjE3NTY0NTcyNDgsImlzcyI6IlN0b2NrU3luYyIsImF1ZCI6IlN0b2NrU3luY0FQSSJ9.zqaoyC0iQLXAoDNo7x2BkcKPusZyR4sTOc73srZ9MPo",
+									"value": "{{adminTokenStockSync}}",
 									"type": "string"
 								}
 							]
@@ -323,7 +323,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiTWFkdXJhbmdhIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJleHAiOjE3NTY0NTcyNDgsImlzcyI6IlN0b2NrU3luYyIsImF1ZCI6IlN0b2NrU3luY0FQSSJ9.zqaoyC0iQLXAoDNo7x2BkcKPusZyR4sTOc73srZ9MPo",
+									"value": "{{adminTokenStockSync}}",
 									"type": "string"
 								}
 							]
@@ -332,7 +332,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"Nesto Corp\",\r\n  \"contactEmail\": \"nesto@gmail.com\",\r\n  \"contactPhone\": \"0525027777\",\r\n  \"address\": \"No.101, Huda building, Al shiham st\",\r\n  \"city\": \"Al Nahda\",\r\n  \"state\": \"Dubai\",\r\n  \"zipCode\": \"12345\",\r\n  \"country\": \"UAE\"\r\n}",
+							"raw": "{\r\n  \"name\": \"Nesto Corp\",\r\n  \"contactEmail\": \"nesto@gmail.com\",\r\n  \"contactPhone\": \"0525027777\",\r\n  \"address\": \"No.101, Huda building, Al shiham st\",\r\n  \"city\": \"Al Nahda\",\r\n  \"state\": \"Dubai\",\r\n  \"zipCode\": \"12345\",\r\n  \"country\": \"UAE\",\r\n  \"items\": [\r\n    \"68a82bd4cd6ee3acb936d593\",\"68aeed48073977d0ca8f79b2\"\r\n  ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -363,7 +363,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiTWFkdXJhbmdhIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJleHAiOjE3NTY0NTcyNDgsImlzcyI6IlN0b2NrU3luYyIsImF1ZCI6IlN0b2NrU3luY0FQSSJ9.zqaoyC0iQLXAoDNo7x2BkcKPusZyR4sTOc73srZ9MPo",
+									"value": "{{adminTokenStockSync}}",
 									"type": "string"
 								}
 							]
@@ -394,6 +394,16 @@
 				{
 					"name": "Get user",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminTokenStockSync}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
