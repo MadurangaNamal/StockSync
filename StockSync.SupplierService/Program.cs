@@ -162,7 +162,7 @@ app.MapControllers();
 RecurringJob.AddOrUpdate<SupplierSyncService>(
     "sync-suppliers",
     service => service.SyncAllSuppliers(),
-    "*/10 * * * *");
+    "*/5 * * * *");
 
 // Trigger it once immediately on startup
 BackgroundJob.Enqueue<SupplierSyncService>(service => service.SyncAllSuppliers());
