@@ -72,6 +72,7 @@ public static class SerilogSetup
                     encoding: Encoding.UTF8,
                     detectEncodingFromByteOrderMarks: false,
                     leaveOpen: true);
+
                 var requestBody = await requestReader.ReadToEndAsync();
 
                 // Reset stream position so the controller can read the body

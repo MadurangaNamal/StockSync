@@ -21,8 +21,7 @@ public class SupplierServiceDBContext : DbContext
         .HasConversion(  // Convert List<string> to a single string for storage
             v => string.Join(",", v ?? new List<string>()),
             v => v != null ? v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList() : new List<string>()
-        )
-        // Ensure EF Core can track changes to the List<string> property 
+        ) // Ensure EF Core can track changes to the List<string> property 
         .Metadata.SetValueComparer(
             new ValueComparer<List<string>>(
                 (c1, c2) => c1 != null && c2 != null && c1.SequenceEqual(c2), // Compare two lists

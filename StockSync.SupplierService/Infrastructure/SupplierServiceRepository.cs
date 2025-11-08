@@ -15,17 +15,20 @@ public class SupplierServiceRepository : ISupplierServiceRepository
 
     public async Task<Supplier?> GetSupplierAsync(int supplierId)
     {
-        return await _dbContext.Suppliers.AsNoTracking().FirstOrDefaultAsync(s => s.SupplierId == supplierId);
+        return await _dbContext.Suppliers.AsNoTracking()
+            .FirstOrDefaultAsync(s => s.SupplierId == supplierId);
     }
 
     public async Task<IEnumerable<Supplier>> GetSuppliersAsync()
     {
-        return await _dbContext.Suppliers.AsNoTracking().ToListAsync();
+        return await _dbContext.Suppliers.AsNoTracking()
+            .ToListAsync();
     }
 
     public async Task AddSupplierAsync(Supplier supplier)
     {
         ArgumentNullException.ThrowIfNull(supplier);
+
         await _dbContext.Suppliers.AddAsync(supplier);
         await SaveAsync();
     }
@@ -33,6 +36,7 @@ public class SupplierServiceRepository : ISupplierServiceRepository
     public async Task UpdateSupplier(Supplier supplier)
     {
         ArgumentNullException.ThrowIfNull(supplier);
+
         _dbContext.Suppliers.Update(supplier);
         await SaveAsync();
     }
@@ -40,13 +44,15 @@ public class SupplierServiceRepository : ISupplierServiceRepository
     public async Task DeleteSupplier(Supplier supplier)
     {
         ArgumentNullException.ThrowIfNull(supplier);
+
         _dbContext.Suppliers.Remove(supplier);
         await SaveAsync();
     }
 
     public async Task<bool> SupplierExistsAsync(int supplierId)
     {
-        return await _dbContext.Suppliers.AsNoTracking().AnyAsync(s => s.SupplierId == supplierId);
+        return await _dbContext.Suppliers.AsNoTracking()
+            .AnyAsync(s => s.SupplierId == supplierId);
     }
 
     public async Task<bool> SaveAsync()

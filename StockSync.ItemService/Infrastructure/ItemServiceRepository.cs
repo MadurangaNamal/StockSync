@@ -16,7 +16,8 @@ public class ItemServiceRepository : IItemServiceRepository
 
     public async Task<Item?> GetItemByIdAsync(string id)
     {
-        return await _dbContext.Items.AsNoTracking().FirstOrDefaultAsync(item => item.Id == id);
+        return await _dbContext.Items.AsNoTracking()
+            .FirstOrDefaultAsync(item => item.Id == id);
     }
 
     public async Task<IEnumerable<Item>> GetAllItemsAsync(string? itemIds)
@@ -24,7 +25,10 @@ public class ItemServiceRepository : IItemServiceRepository
         if (!string.IsNullOrEmpty(itemIds))
         {
             var ids = itemIds.Split(',').Select(id => id.Trim()).ToList();
-            return await _dbContext.Items.AsNoTracking().Where(item => ids.Contains(item.Id)).ToListAsync();
+
+            return await _dbContext.Items.AsNoTracking()
+                .Where(item => ids.Contains(item.Id))
+                .ToListAsync();
         }
 
         return await _dbContext.Items.AsNoTracking().ToListAsync();
@@ -33,7 +37,7 @@ public class ItemServiceRepository : IItemServiceRepository
     public async Task<Item> CreateItemAsync(Item item)
     {
         item.CreatedAt = DateTime.UtcNow;
-        item.UpdatedAt = DateTime.UtcNow;
+        item.UpdatedAt = item.CreatedAt;
 
         if (string.IsNullOrEmpty(item.Id))
             item.Id = ObjectId.GenerateNewId().ToString();
@@ -63,15 +67,11 @@ public class ItemServiceRepository : IItemServiceRepository
 
     public async Task<bool> DeleteItemAsync(string id)
     {
-        var item = await _dbContext.Items.FindAsync(id);
+        var deletedCount = await _dbContext.Items
+            .Where(i => i.Id == id)
+            .ExecuteDeleteAsync();
 
-        if (item == null)
-            return false;
-
-        _dbContext.Items.Remove(item);
-
-        await _dbContext.SaveChangesAsync();
-        return true;
+        return deletedCount > 0;
     }
 
     public async Task<bool> ItemExistsAsync(string id)

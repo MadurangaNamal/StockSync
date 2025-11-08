@@ -26,6 +26,7 @@ public class ItemsController : ControllerBase
     public async Task<ActionResult<IEnumerable<ItemDto>>> GetItems([FromQuery] string? itemIds = null)
     {
         var items = await _repository.GetAllItemsAsync(itemIds);
+
         return Ok(_mapper.Map<IEnumerable<ItemDto>>(items));
     }
 
@@ -43,6 +44,9 @@ public class ItemsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ItemDto>> CreateItem(ItemManipulationDto itemDto)
     {
+        if (itemDto == null)
+            return BadRequest($"Invalid item data");
+
         var item = _mapper.Map<Item>(itemDto);
         var createdItem = await _repository.CreateItemAsync(item);
         var itemToReturn = _mapper.Map<ItemDto>(createdItem);
@@ -57,8 +61,12 @@ public class ItemsController : ControllerBase
         if (!await _repository.ItemExistsAsync(id))
             return NotFound($"Item with item id: {id} not found");
 
+        if (itemDto == null)
+            return BadRequest($"Invalid item data");
+
         var item = _mapper.Map<Item>(itemDto);
         var updatedItem = await _repository.UpdateItemAsync(id, item);
+
         return Ok(_mapper.Map<ItemDto>(updatedItem));
     }
 

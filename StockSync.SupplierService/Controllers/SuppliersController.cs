@@ -70,7 +70,7 @@ public class SuppliersController : ControllerBase
 
         var supplierDto = _mapper.Map<SupplierDto>(supplier);
 
-        if (supplier.Items?.Any() == true)
+        if (supplier.Items != null && supplier.Items.Any() == true)
         {
             var itemDtos = supplier.Items
                 .Select(itemId => _cacheService.GetItemDto(itemId))
@@ -106,6 +106,7 @@ public class SuppliersController : ControllerBase
 
         await _repository.UpdateSupplier(supplier!);
         var supplierToReturn = _mapper.Map<SupplierDto>(supplier);
+
         return Ok(supplierToReturn);
     }
 
@@ -113,7 +114,13 @@ public class SuppliersController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteSupplier(string id)
     {
-        var supplier = await _repository.GetSupplierAsync(int.Parse(id));
+        if (!int.TryParse(id, out int supplierId))
+        {
+            return BadRequest($"Invalid supplier id format: {id}");
+        }
+
+        var supplier = await _repository.GetSupplierAsync(supplierId);
+
         if (supplier == null)
             return NotFound($"Supplier with id: {id} not found");
 

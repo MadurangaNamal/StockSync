@@ -164,7 +164,7 @@ RecurringJob.AddOrUpdate<SupplierSyncService>(
     service => service.SyncAllSuppliers(),
     "*/5 * * * *");
 
-// Trigger it once immediately on startup
+// Trigger once immediately on startup
 BackgroundJob.Enqueue<SupplierSyncService>(service => service.SyncAllSuppliers());
 
 app.Run();
