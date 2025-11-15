@@ -10,10 +10,10 @@ using StockSync.SupplierService.Infrastructure;
 using StockSync.SupplierService.Services;
 using System.Text;
 using System.Text.Json;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure Serilog
 builder.ConfigureSerilog();
 builder.Configuration.AddUserSecrets<Program>();
 
@@ -64,6 +64,25 @@ builder.Services.AddHangfire(config => config.SetDataCompatibilityLevel(Compatib
             }));
 
 builder.Services.AddHangfireServer();
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+    {
+        var ipAddress = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+        return RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: ipAddress,
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 100,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            });
+    });
+
+    options.RejectionStatusCode = 429;
+});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -153,6 +172,7 @@ else
 
 app.UseGlobalExceptionHandler();
 app.UseAuthentication();
+app.UseRateLimiter();
 app.UseAuthorization();
 app.UseRequestResponseLogging();
 app.UseHangfireDashboard("/hangfire");
@@ -164,7 +184,6 @@ RecurringJob.AddOrUpdate<SupplierSyncService>(
     service => service.SyncAllSuppliers(),
     "*/5 * * * *");
 
-// Trigger once immediately on startup
-BackgroundJob.Enqueue<SupplierSyncService>(service => service.SyncAllSuppliers());
+BackgroundJob.Enqueue<SupplierSyncService>(service => service.SyncAllSuppliers()); // Trigger once immediately on startup
 
 app.Run();
