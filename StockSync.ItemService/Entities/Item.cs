@@ -17,6 +17,7 @@ public class Item
     [MaxLength(1000)]
     public string Description { get; set; } = string.Empty;
 
+    [BsonRepresentation(BsonType.Decimal128)]
     public decimal Price { get; set; }
 
     public int StockQuantity { get; set; }

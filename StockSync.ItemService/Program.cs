@@ -11,7 +11,6 @@ using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure Serilog
 builder.ConfigureSerilog();
 builder.Configuration.AddUserSecrets<Program>();
 
@@ -33,7 +32,6 @@ var tokenValidationParameters = new TokenValidationParameters
     ClockSkew = TimeSpan.Zero,
 };
 
-//  Add Services to the container
 builder.Services.AddDbContext<ItemServiceDBContext>(options => options.UseMongoDB(mongoConn, dbName));
 builder.Services.AddSingleton(tokenValidationParameters);
 builder.Services.AddScoped<IItemServiceRepository, ItemServiceRepository>();
@@ -108,31 +106,41 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole(UserRoles.Admin));
-    options.AddPolicy("RequireUserRole", policy => policy.RequireRole(UserRoles.User));
-});
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("RequireAdministratorRole", policy => policy.RequireRole(UserRoles.Admin))
+    .AddPolicy("RequireUserRole", policy => policy.RequireRole(UserRoles.User))
+    .AddPolicy("RequireAdminOrUser", policy =>
+    {
+        policy.RequireRole(UserRoles.Admin);
+        policy.RequireRole(UserRoles.User);
+    });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") != "true")
 {
-    app.MapOpenApi();
     app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI();
 }
 else
 {
+    app.UseExceptionHandler("/error");
+    app.UseHsts();
     app.UseHttpsRedirection();
 }
 
 app.UseGlobalExceptionHandler();
+app.UseRouting();
 app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    app.MapOpenApi();
+}
+
 app.UseRequestResponseLogging();
 app.MapControllers();
 

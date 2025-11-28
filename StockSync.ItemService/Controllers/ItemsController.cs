@@ -18,16 +18,17 @@ public class ItemsController : ControllerBase
 
     public ItemsController(IItemServiceRepository repository, IMapper mapper)
     {
-        _repository = repository;
-        _mapper = mapper;
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ItemDto>>> GetItems([FromQuery] string? itemIds = null)
     {
-        var items = await _repository.GetAllItemsAsync(itemIds);
+        var items = await _repository.GetItemsAsync(itemIds);
+        var itemsResponse = _mapper.Map<IEnumerable<ItemDto>>(items);
 
-        return Ok(_mapper.Map<IEnumerable<ItemDto>>(items));
+        return Ok(itemsResponse);
     }
 
     [HttpGet("{id}", Name = "GetItem")]
@@ -38,7 +39,9 @@ public class ItemsController : ControllerBase
         if (item == null)
             return NotFound($"Item with item id: {id} not found");
 
-        return Ok(_mapper.Map<ItemDto>(item));
+        var itemResponse = _mapper.Map<ItemDto>(item);
+
+        return Ok(itemResponse);
     }
 
     [HttpPost]
@@ -54,7 +57,7 @@ public class ItemsController : ControllerBase
         return CreatedAtRoute("GetItem", new { id = itemToReturn.Id }, itemToReturn);
     }
 
-    [Authorize(Roles = UserRoles.Admin)]
+    [Authorize(Policy = "RequireAdminOrUser")]
     [HttpPut("{id}")]
     public async Task<ActionResult<ItemDto>> UpdateItem(string id, ItemManipulationDto itemDto)
     {
@@ -66,11 +69,12 @@ public class ItemsController : ControllerBase
 
         var item = _mapper.Map<Item>(itemDto);
         var updatedItem = await _repository.UpdateItemAsync(id, item);
+        var itemResponse = _mapper.Map<ItemDto>(updatedItem);
 
-        return Ok(_mapper.Map<ItemDto>(updatedItem));
+        return Ok(itemResponse);
     }
 
-    [Authorize(Roles = UserRoles.Admin)]
+    [Authorize(Policy = "RequireAdministratorRole")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteItem(string id)
     {

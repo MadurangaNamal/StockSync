@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using StockSync.ItemService.Data;
 using StockSync.ItemService.Entities;
@@ -8,25 +9,29 @@ namespace StockSync.ItemService.Infrastructure;
 public class ItemServiceRepository : IItemServiceRepository
 {
     private readonly ItemServiceDBContext _dbContext;
+    private readonly IMapper _mapper;
 
-    public ItemServiceRepository(ItemServiceDBContext context)
+    public ItemServiceRepository(ItemServiceDBContext context, IMapper mapper)
     {
-        _dbContext = context;
+        _dbContext = context ?? throw new ArgumentNullException(nameof(context));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     public async Task<Item?> GetItemByIdAsync(string id)
     {
-        return await _dbContext.Items.AsNoTracking()
+        return await _dbContext.Items
+            .AsNoTracking()
             .FirstOrDefaultAsync(item => item.Id == id);
     }
 
-    public async Task<IEnumerable<Item>> GetAllItemsAsync(string? itemIds)
+    public async Task<IEnumerable<Item>> GetItemsAsync(string? itemIds)
     {
         if (!string.IsNullOrEmpty(itemIds))
         {
             var ids = itemIds.Split(',').Select(id => id.Trim()).ToList();
 
-            return await _dbContext.Items.AsNoTracking()
+            return await _dbContext.Items
+                .AsNoTracking()
                 .Where(item => ids.Contains(item.Id))
                 .ToListAsync();
         }
@@ -43,8 +48,8 @@ public class ItemServiceRepository : IItemServiceRepository
             item.Id = ObjectId.GenerateNewId().ToString();
 
         _dbContext.Items.Add(item);
-
         await _dbContext.SaveChangesAsync();
+
         return item;
     }
 
@@ -55,10 +60,7 @@ public class ItemServiceRepository : IItemServiceRepository
         if (existingItem == null)
             throw new KeyNotFoundException($"Item with id {id} not found.");
 
-        existingItem.Name = item.Name;
-        existingItem.Description = item.Description;
-        existingItem.Price = item.Price;
-        existingItem.StockQuantity = item.StockQuantity;
+        _mapper.Map(item, existingItem);
         existingItem.UpdatedAt = DateTime.UtcNow;
 
         await _dbContext.SaveChangesAsync();
