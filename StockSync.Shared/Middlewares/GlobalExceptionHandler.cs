@@ -32,6 +32,8 @@ public class GlobalExceptionHandler
             var errorResponse = new ProblemDetails
             {
                 Status = 500,
+                Type = ex.GetType().Name,
+                Title = ex.Message,
                 Detail = "An unexpected error occurred. Please try again later."
             };
 
@@ -41,16 +43,15 @@ public class GlobalExceptionHandler
             }
             else
             {
-                // Log the error but avoid writing to a closed stream
-                Serilog.Log.Error(ex, "Unhandled exception occurred.");
+                Serilog.Log.Error(ex, "Unhandled exception occurred.");  // Log the error but avoid writing to a closed stream
             }
         }
     }
 }
 
-// An extension method to easily add the middleware to the application pipeline
 public static class GlobalExceptionHandlerExtensions
 {
+    // An extension method to easily add the middleware to the application pipeline
     public static IApplicationBuilder UseGlobalExceptionHandler(this IApplicationBuilder builder)
     {
         return builder.UseMiddleware<GlobalExceptionHandler>();

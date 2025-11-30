@@ -26,8 +26,7 @@ public static class SerilogSetup
         builder.Host.UseSerilog();
 
         // Register Serilog with the dependency injection container
-        // The dispose: true parameter ensures proper cleanup when the application shuts down
-        builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
+        builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true)); // The dispose: true parameter ensures proper cleanup when the application shuts down
     }
 
     /// <summary>

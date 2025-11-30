@@ -64,6 +64,7 @@ public class ItemServiceRepository : IItemServiceRepository
         existingItem.UpdatedAt = DateTime.UtcNow;
 
         await _dbContext.SaveChangesAsync();
+
         return existingItem;
     }
 

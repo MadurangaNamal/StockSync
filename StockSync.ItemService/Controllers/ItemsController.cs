@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using StockSync.ItemService.Entities;
 using StockSync.ItemService.Infrastructure;
 using StockSync.ItemService.Models;
-using StockSync.Shared.Models;
 
 namespace StockSync.ItemService.Controllers;
 

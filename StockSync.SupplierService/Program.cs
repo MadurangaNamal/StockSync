@@ -36,7 +36,6 @@ var tokenValidationParameters = new TokenValidationParameters
     ClockSkew = TimeSpan.Zero,
 };
 
-//  Add Services to the container
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<ISupplierServiceRepository, SupplierServiceRepository>();
@@ -128,10 +127,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAuthorization(options =>
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("RequireAdministratorRole", policy => policy.RequireRole(UserRoles.Admin))
+    .AddPolicy("RequireUserRole", policy => policy.RequireRole(UserRoles.User))
+    .AddPolicy("RequireAdminOrUser", policy =>
     {
-        options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole(UserRoles.Admin));
-        options.AddPolicy("RequireUserRole", policy => policy.RequireRole(UserRoles.User));
+        policy.RequireRole(UserRoles.Admin);
+        policy.RequireRole(UserRoles.User);
     });
 
 
@@ -145,18 +147,21 @@ try
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
         logger.LogInformation("Applying database migrations...");
+
         await dbContext.Database.MigrateAsync();
+
         logger.LogInformation("Database migrations completed successfully");
     }
 }
 catch (Exception ex)
 {
     var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
     logger.LogError(ex, "An error occurred while applying database migrations");
+
     throw;
 }
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() ||
     Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") != "true")
 {
@@ -171,8 +176,9 @@ else
 }
 
 app.UseGlobalExceptionHandler();
-app.UseAuthentication();
+app.UseRouting();
 app.UseRateLimiter();
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseRequestResponseLogging();
 app.UseHangfireDashboard("/hangfire");

@@ -32,12 +32,13 @@ public class SupplierSyncService
     public async Task SyncSupplierItems(int supplierId)
     {
         var supplier = await _dbContext.Suppliers.FindAsync(supplierId);
+        
         if (supplier == null)
             return;
 
         var currentItemIds = supplier.Items ?? [];
 
-        if (!currentItemIds.Any())
+        if (currentItemIds.Count == 0)
             return;
 
         var itemIdsParam = string.Join(",", currentItemIds);
@@ -63,12 +64,15 @@ public class SupplierSyncService
                     }
 
                     await _dbContext.SaveChangesAsync();
+
                     return;
                 }
             }
             catch (HttpRequestException)
             {
-                if (attempt == 2) throw;
+                if (attempt == 2) 
+                    throw;
+
                 await Task.Delay(1000 * (attempt + 1));
             }
         }
@@ -77,6 +81,7 @@ public class SupplierSyncService
     public async Task SyncAllSuppliers()
     {
         var suppliers = await _dbContext.Suppliers.ToListAsync();
+
         foreach (var supplier in suppliers)
         {
             await SyncSupplierItems(supplier.SupplierId);
@@ -107,6 +112,7 @@ public class SupplierSyncService
         var tokenString = tokenHandler.WriteToken(token);
 
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+
         return client;
     }
 

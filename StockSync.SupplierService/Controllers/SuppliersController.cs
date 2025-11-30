@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using StockSync.Shared.Models;
 using StockSync.SupplierService.Entities;
 using StockSync.SupplierService.Infrastructure;
 using StockSync.SupplierService.Models;
@@ -83,7 +82,7 @@ public class SuppliersController : ControllerBase
         return Ok(supplierDto);
     }
 
-    [Authorize(Roles = UserRoles.Admin)]
+    [Authorize(Policy = "RequireAdminOrUser")]
     [HttpPost]
     public async Task<ActionResult<SupplierDto>> AddNewSupplier(SupplierManipulationDto supplierCreationDto)
     {
@@ -94,7 +93,7 @@ public class SuppliersController : ControllerBase
         return CreatedAtRoute("GetSupplierById", new { id = supplierToReturn.SupplierId }, supplierToReturn);
     }
 
-    [Authorize(Roles = UserRoles.Admin)]
+    [Authorize(Policy = "RequireAdministratorRole")]
     [HttpPut("{id}")]
     public async Task<ActionResult<SupplierDto>> UpdateSupplier(string id, SupplierManipulationDto supplierUpdateDto)
     {
@@ -110,7 +109,7 @@ public class SuppliersController : ControllerBase
         return Ok(supplierToReturn);
     }
 
-    [Authorize(Roles = UserRoles.Admin)]
+    [Authorize(Policy = "RequireAdministratorRole")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteSupplier(string id)
     {
