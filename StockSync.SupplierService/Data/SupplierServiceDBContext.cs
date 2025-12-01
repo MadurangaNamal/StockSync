@@ -20,7 +20,7 @@ public class SupplierServiceDBContext : DbContext
         .Property(s => s.Items)
         .HasConversion(                                             // Convert List<string> to a single string for storage
             v => string.Join(",", v ?? new List<string>()),
-            v => v != null ? v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList() : new List<string>()) 
+            v => v != null ? v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList() : new List<string>())
         // Ensure EF Core can track changes to the List<string> property 
         .Metadata.SetValueComparer(
             new ValueComparer<List<string>>(

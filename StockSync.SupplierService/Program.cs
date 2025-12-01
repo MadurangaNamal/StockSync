@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using StockSync.Shared.Middlewares;
 using StockSync.Shared.Models;
 using StockSync.SupplierService.Data;
+using StockSync.SupplierService.Handlers;
 using StockSync.SupplierService.Infrastructure;
 using StockSync.SupplierService.Services;
 using System.Text;
@@ -41,13 +42,21 @@ builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<ISupplierServiceRepository, SupplierServiceRepository>();
 builder.Services.AddScoped<SupplierSyncService>();
 builder.Services.AddDbContext<SupplierServiceDBContext>(options => options.UseSqlServer(connectionString));
-builder.Services.AddHttpClient();
 builder.Services.AddSingleton(tokenValidationParameters);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(cfg => { }, typeof(Program));
+
+builder.Services.AddTransient<JwtAuthenticationHandler>();
+builder.Services.AddHttpClient("ItemServiceClient", (serviceProvider, client) =>
+{
+    var config = serviceProvider.GetRequiredService<IConfiguration>();
+    client.BaseAddress = new Uri(config["ItemService:BaseUrl"]
+        ?? throw new InvalidOperationException("BaseUrl not found"));
+})
+.AddHttpMessageHandler<JwtAuthenticationHandler>();
 
 builder.Services.AddHangfire(config => config.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
           .UseSimpleAssemblyNameTypeSerializer()
