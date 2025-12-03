@@ -24,6 +24,7 @@ var dbPassword = builder.Configuration["DB_PASSWORD"]
     ?? throw new InvalidOperationException("Database password not found in configuration.");
 var jwtSecretKey = builder.Configuration["JWT_SECRET_KEY"]
     ?? throw new InvalidOperationException("JWT secret key not found in configuration.");
+
 var connectionString = rawConnectionString.Replace("{DB_PASSWORD}", dbPassword);
 var tokenValidationParameters = new TokenValidationParameters
 {

@@ -1,5 +1,4 @@
-﻿
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using StockSync.Shared.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;

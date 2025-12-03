@@ -96,6 +96,7 @@ public class AuthController : ControllerBase
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
         var tokenExpiry = _configuration["Jwt:TokenExpiryInMinutes"]
             ?? throw new InvalidOperationException("JWT token expiry not found in configuration.");
 

@@ -8,15 +8,18 @@ public class CacheService : ICacheService
 {
     private readonly IMemoryCache _cache;
     private const string CacheKeyPrefix = "Item_";
+    private readonly IConfiguration _configuration;
 
-    public CacheService(IMemoryCache cache)
+    public CacheService(IMemoryCache cache, IConfiguration configuration)
     {
         _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
     }
 
     public void SetItemDto(string itemId, ItemDto itemDto, TimeSpan? expiry = null)
     {
-        _cache.Set($"{CacheKeyPrefix}{itemId}", itemDto, expiry ?? TimeSpan.FromHours(1));
+        _cache.Set($"{CacheKeyPrefix}{itemId}", itemDto, expiry
+            ?? TimeSpan.FromMinutes(_configuration.GetValue<int>("CacheExpiryInMinutes")));
     }
 
     public ItemDto? GetItemDto(string itemId)

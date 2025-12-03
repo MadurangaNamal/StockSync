@@ -15,13 +15,15 @@ public class SupplierServiceRepository : ISupplierServiceRepository
 
     public async Task<Supplier?> GetSupplierAsync(int supplierId)
     {
-        return await _dbContext.Suppliers.AsNoTracking()
+        return await _dbContext.Suppliers
+            .AsNoTracking()
             .FirstOrDefaultAsync(s => s.SupplierId == supplierId);
     }
 
     public async Task<IEnumerable<Supplier>> GetSuppliersAsync()
     {
-        return await _dbContext.Suppliers.AsNoTracking()
+        return await _dbContext.Suppliers
+            .AsNoTracking()
             .ToListAsync();
     }
 
@@ -51,7 +53,8 @@ public class SupplierServiceRepository : ISupplierServiceRepository
 
     public async Task<bool> SupplierExistsAsync(int supplierId)
     {
-        return await _dbContext.Suppliers.AsNoTracking()
+        return await _dbContext.Suppliers
+            .AsNoTracking()
             .AnyAsync(s => s.SupplierId == supplierId);
     }
 
