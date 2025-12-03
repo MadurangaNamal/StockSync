@@ -31,8 +31,8 @@ public class SuppliersController : ControllerBase
 
         foreach (var supplier in allSuppliers)
         {
-            var itemDtos = (supplier.Items ?? new List<string>())
-                .Select(id => _cacheService.GetItemDto(id))
+            var itemDtos = (supplier.Items ?? [])
+                .Select(itemId => _cacheService.GetItemDto(itemId))
                 .Where(item => item != null)
                 .ToList();
 
@@ -45,9 +45,11 @@ public class SuppliersController : ControllerBase
                 supplier.City,
                 supplier.State,
                 supplier.ZipCode,
-                supplier.Country);
+                supplier.Country)
+            {
+                Items = itemDtos!
+            };
 
-            dto.Items = itemDtos!;
             supplierDtos.Add(dto);
         }
 
@@ -58,9 +60,7 @@ public class SuppliersController : ControllerBase
     public async Task<ActionResult<SupplierDto>> GetSupplierById(string id)
     {
         if (!int.TryParse(id, out int supplierId))
-        {
             return BadRequest($"Invalid supplier id format: {id}");
-        }
 
         var supplier = await _repository.GetSupplierAsync(supplierId);
 
@@ -87,9 +87,10 @@ public class SuppliersController : ControllerBase
     public async Task<ActionResult<SupplierDto>> AddNewSupplier(SupplierManipulationDto supplierCreationDto)
     {
         var supplier = _mapper.Map<Supplier>(supplierCreationDto);
-        await _repository.AddSupplierAsync(supplier);
 
+        await _repository.AddSupplierAsync(supplier);
         var supplierToReturn = _mapper.Map<SupplierDto>(supplier);
+
         return CreatedAtRoute("GetSupplierById", new { id = supplierToReturn.SupplierId }, supplierToReturn);
     }
 
@@ -114,9 +115,7 @@ public class SuppliersController : ControllerBase
     public async Task<ActionResult> DeleteSupplier(string id)
     {
         if (!int.TryParse(id, out int supplierId))
-        {
             return BadRequest($"Invalid supplier id format: {id}");
-        }
 
         var supplier = await _repository.GetSupplierAsync(supplierId);
 
@@ -124,6 +123,7 @@ public class SuppliersController : ControllerBase
             return NotFound($"Supplier with id: {id} not found");
 
         await _repository.DeleteSupplier(supplier);
+
         return NoContent();
     }
 }

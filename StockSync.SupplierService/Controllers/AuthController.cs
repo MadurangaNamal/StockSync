@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using StockSync.Shared.Models;
 using StockSync.SupplierService.Data;
 using StockSync.SupplierService.Entities;
 using StockSync.SupplierService.Models.UserIdentity;
@@ -25,7 +24,7 @@ public class AuthController : ControllerBase
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
     }
 
-    [Authorize(Roles = UserRoles.Admin)]
+    [Authorize(Policy = "RequireAdminOrUser")]
     [HttpGet("{userId}", Name = "GetUser")]
     public async Task<ActionResult<User>> GetUserById(string userId)
     {
@@ -40,6 +39,7 @@ public class AuthController : ControllerBase
                 Detail = $"No user found with ID '{userId}'."
             });
         }
+
         return Ok(new { user.UserId, user.Username, user.Role });
     }
 
@@ -65,6 +65,7 @@ public class AuthController : ControllerBase
 
         _dbContext.Users.Add(user);
         await _dbContext.SaveChangesAsync();
+
         return CreatedAtRoute("GetUser", new { userId = user.UserId }, new { user.UserId, user.Username, user.Role });
     }
 
@@ -77,6 +78,7 @@ public class AuthController : ControllerBase
             return Unauthorized("Invalid credentials");
 
         var token = GenerateJwtToken(user);
+
         return Ok(new { Token = token });
     }
 
@@ -94,12 +96,14 @@ public class AuthController : ControllerBase
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var tokenExpiry = _configuration["Jwt:TokenExpiryInMinutes"]
+            ?? throw new InvalidOperationException("JWT token expiry not found in configuration.");
 
         var token = new JwtSecurityToken(
             issuer: _configuration["Jwt:Issuer"],
             audience: _configuration["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.Now.AddHours(1),
+            expires: DateTime.Now.AddMinutes(Double.Parse(tokenExpiry)),
             signingCredentials: creds);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
