@@ -110,10 +110,9 @@ builder.Services.AddAuthorizationBuilder()
     .AddPolicy("RequireAdministratorRole", policy => policy.RequireRole(UserRoles.Admin))
     .AddPolicy("RequireUserRole", policy => policy.RequireRole(UserRoles.User))
     .AddPolicy("RequireAdminOrUser", policy =>
-    {
-        policy.RequireRole(UserRoles.Admin);
-        policy.RequireRole(UserRoles.User);
-    });
+        policy.RequireAssertion(context =>
+            context.User.IsInRole(UserRoles.Admin) ||
+            context.User.IsInRole(UserRoles.User)));
 
 var app = builder.Build();
 
