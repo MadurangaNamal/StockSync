@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: StockSync.SupplierService/Dockerfile
-    image: stocksync-supplier:v1.1
+    image: stocksync-supplier:v1.2
     env_file:
       - .env
     ports:
@@ -26,7 +26,7 @@ services:
     build:
       context: .
       dockerfile: StockSync.ItemService/Dockerfile
-    image: stocksync-item:v1.1
+    image: stocksync-item:v1.2
     env_file:
       - .env
     ports:
