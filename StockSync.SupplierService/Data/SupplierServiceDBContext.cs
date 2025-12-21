@@ -16,9 +16,10 @@ public class SupplierServiceDBContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Convert List<string> to a single string for storage
         modelBuilder.Entity<Supplier>()
         .Property(s => s.Items)
-        .HasConversion(                                             // Convert List<string> to a single string for storage
+        .HasConversion(
             v => string.Join(",", v ?? new List<string>()),
             v => v != null ? v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList() : new List<string>())
         // Ensure EF Core can track changes to the List<string> property 

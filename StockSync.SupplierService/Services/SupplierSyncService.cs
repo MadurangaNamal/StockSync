@@ -11,10 +11,7 @@ public class SupplierSyncService
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ICacheService _cacheService;
 
-    public SupplierSyncService(SupplierServiceDBContext dbContext,
-        IHttpClientFactory httpClientFactory,
-        IConfiguration configuration,
-        ICacheService cacheService)
+    public SupplierSyncService(SupplierServiceDBContext dbContext, IHttpClientFactory httpClientFactory, ICacheService cacheService)
     {
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
@@ -35,13 +32,13 @@ public class SupplierSyncService
             return;
 
         var itemIdsParam = string.Join(",", currentItemIds);
-        var client = CreateAuthorizedClient();
+        var httpClient = CreateAuthorizedHttpClient();
 
         for (int attempt = 0; attempt < 3; attempt++)
         {
             try
             {
-                var response = await client.GetAsync($"api/items?itemIds={itemIdsParam}");
+                var response = await httpClient.GetAsync($"api/items?itemIds={itemIdsParam}");
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -57,7 +54,6 @@ public class SupplierSyncService
                     }
 
                     await _dbContext.SaveChangesAsync();
-
                     return;
                 }
             }
@@ -81,7 +77,7 @@ public class SupplierSyncService
         }
     }
 
-    private HttpClient CreateAuthorizedClient()
+    private HttpClient CreateAuthorizedHttpClient()
     {
         return _httpClientFactory.CreateClient("ItemServiceClient");
     }
