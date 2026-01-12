@@ -15,17 +15,23 @@ using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
 builder.ConfigureSerilog();
 builder.Configuration.AddUserSecrets<Program>();
 
+/*
 var rawConnectionString = builder.Configuration.GetConnectionString("StockSyncDBConnection")
     ?? throw new InvalidOperationException("Connection string 'StockSyncDBConnection' not found.");
 var dbPassword = builder.Configuration["DB_PASSWORD"]
     ?? throw new InvalidOperationException("Database password not found in configuration.");
+var connectionString = rawConnectionString.Replace("{DB_PASSWORD}", dbPassword);
+*/
 var jwtSecretKey = builder.Configuration["JWT_SECRET_KEY"]
     ?? throw new InvalidOperationException("JWT secret key not found in configuration.");
 
-var connectionString = rawConnectionString.Replace("{DB_PASSWORD}", dbPassword);
+var connectionString = builder.Configuration.GetConnectionString("StockSyncDB")
+    ?? throw new InvalidOperationException("Connection string 'StockSyncDB' not found.");
+
 var tokenValidationParameters = new TokenValidationParameters
 {
     ValidateIssuer = true,
@@ -42,7 +48,15 @@ builder.Services.AddMemoryCache();
 builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<ISupplierServiceRepository, SupplierServiceRepository>();
 builder.Services.AddScoped<SupplierSyncService>();
-builder.Services.AddDbContext<SupplierServiceDBContext>(options => options.UseSqlServer(connectionString));
+
+builder.Services.AddDbContext<SupplierServiceDBContext>(options =>
+options.UseSqlServer(
+    connectionString,
+    sqlOptions => sqlOptions.EnableRetryOnFailure(
+                   maxRetryCount: 5,
+                   maxRetryDelay: TimeSpan.FromSeconds(30),
+                   errorNumbersToAdd: null)));
+
 builder.Services.AddSingleton(tokenValidationParameters);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -192,6 +206,7 @@ app.UseAuthorization();
 app.UseRequestResponseLogging();
 app.UseHangfireDashboard("/hangfire");
 app.MapControllers();
+app.MapDefaultEndpoints();
 
 // Schedule the recurring job 
 RecurringJob.AddOrUpdate<SupplierSyncService>(
@@ -201,4 +216,4 @@ RecurringJob.AddOrUpdate<SupplierSyncService>(
 
 BackgroundJob.Enqueue<SupplierSyncService>(service => service.SyncAllSuppliers()); // Trigger once immediately on startup
 
-app.Run();
+await app.RunAsync();

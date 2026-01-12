@@ -23,6 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\StockSync.ServiceDefaults\StockSync.ServiceDefaults.csproj" />
 		<ProjectReference Include="..\StockSync.Shared\StockSync.Shared.csproj" />
 	</ItemGroup>
 </Project>

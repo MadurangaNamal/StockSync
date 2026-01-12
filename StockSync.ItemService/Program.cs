@@ -11,6 +11,7 @@ using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
 builder.ConfigureSerilog();
 builder.Configuration.AddUserSecrets<Program>();
 
@@ -142,5 +143,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseRequestResponseLogging();
 app.MapControllers();
+app.MapDefaultEndpoints();
 
-app.Run();
+await app.RunAsync();
