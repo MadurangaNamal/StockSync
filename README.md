@@ -1,77 +1,56 @@
-
-
 # StockSync
 
-StockSync is a microservices-based inventory management system built with ASP.NET Core Web API. It provides scalable, containerized services for managing suppliers and inventory items, using modern technologies and best practices.
+StockSync is a **cloud-native, microservices-based inventory management system** built with **ASP.NET Core** and orchestrated using **ASP.NET Core Aspire** – Microsoft’s official stack for distributed .NET applications.
 
-## Architecture
+This demonstrates modern development practices including service orchestration, observability, resilience, caching, background processing, and containerization.
 
-- **Supplier Service**: Handles supplier management, authentication, and authorization. Uses MS SQL Server and Entity Framework Core. Supports syncing supplier items from the Item Service and uses Hangfire for background jobs.
-- **Item Service**: Manages inventory items. Uses MongoDB for storage. Provides RESTful endpoints for CRUD operations and batch queries.
-- **Shared Library**: Contains shared models, user roles, and middleware for logging and global exception handling.
-- **Docker Compose**: Orchestrates all services and databases for local development and deployment.
+## Architecture Overview
 
-## Features
+- **Supplier Service** (.NET Web API)  
+  Handles supplier management, JWT authentication/authorization, Hangfire background jobs, and caching.  
+  Database: **Microsoft SQL Server** (via Entity Framework Core)
 
-- Microservices architecture
-- RESTful APIs for suppliers and items
-- JWT-based authentication and role-based authorization
-- Centralized exception handling and request/response logging (Serilog)
-- Supplier-Item sync with caching (in-memory)
-- Hangfire background jobs for scheduled sync
-- Dockerized services and databases (SQL Server, MongoDB)
+- **Item Service** (.NET Web API)  
+  Manages inventory items with flexible querying.  
+  Database: **MongoDB**
 
-## Recent Changes
+- **Shared Library**  
+  Contains common models, DTOs, user roles, middleware (Serilog logging, global exception handling)
 
-- Supplier Service now syncs item details from Item Service and caches them for fast access
-- Hangfire integration for scheduled supplier sync jobs
-- Improved error handling and logging
-- Entity Framework Core and MongoDB EF Core integration
-- New endpoints for batch item queries and supplier-item relationships
+- **Orchestration**  
+  **ASP.NET Core Aspire** (AppHost + ServiceDefaults)  
+  Provides service discovery, automatic connection string injection, health checks, OpenTelemetry, and a beautiful dashboard.
 
-## Getting Started
+- **Supporting Services**  
+  - Redis (distributed caching & optional Redis Commander UI)  
+  - Hangfire (background jobs with SQL Server storage)
+
+## Key Features
+
+- Microservices architecture with clean separation of concerns
+- JWT-based authentication and role-based authorization (`Admin` / `User`)
+- Centralized request/response logging with **Serilog**
+- Global exception handling
+- Supplier → Item relationship with **cached Item details** for fast reads
+- **Hangfire** scheduled jobs for periodic supplier-item synchronization
+- **In-memory + optional Redis distributed caching**
+- Full **observability** via OpenTelemetry (traces, metrics, logs)
+- Automatic health checks and resilience policies (via Aspire ServiceDefaults)
+- Docker containerization
+- **Aspire Dashboard** for live monitoring of all resources
+
+## Getting Started (Local Development with Aspire)
 
 ### Prerequisites
 
-- Docker & Docker Compose
-- .NET 9 SDK (for local development)
+- .NET 9 SDK
+- Docker Desktop (running in the background – Aspire will start containers automatically)
 
-### Setup & Run
+### Run the Entire Application
 
-1. Clone the repository:
-	```sh
-	git clone https://github.com/MadurangaNamal/StockSync.git
-	cd StockSync
-	```
-2. Create a `.env` file in the root directory with the following content:
-	```env
-	DB_PASSWORD=YourStrongPassword
-	JWT_SECRET_KEY=YourJWTSecretKey
-	```
-3. Start all services using Docker Compose:
-	```sh
-	docker-compose up --build
-	```
-4. Access APIs:
-	- Supplier Service: `http://localhost:5001`
-	- Item Service: `http://localhost:5002`
+```bash
+git clone https://github.com/MadurangaNamal/StockSync.git
+cd StockSync
 
-## API Documentation
-
-You can use the included Postman collection (`StockSync.postman_collection.json`) for testing endpoints.
-
-## Project Structure
-
-- `StockSync.SupplierService/` - Supplier microservice
-- `StockSync.ItemService/` - Item microservice
-- `StockSync.Shared/` - Shared code
-- `docker-compose.yml` - Service orchestration
-
-## Background Jobs
-
-- Supplier Service uses Hangfire to schedule supplier-item sync every 10 minutes and on startup.
-- Hangfire dashboard available at `/hangfire` (when running in development).
-
-## Contributing
-
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+# Run the Aspire AppHost (orchestrates everything)
+dotnet run --project StockSync.AppHost
