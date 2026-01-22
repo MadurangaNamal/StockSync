@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using StockSync.ItemService.Entities;
 using StockSync.ItemService.Infrastructure;
 using StockSync.ItemService.Models;
+using StockSync.Shared.Models;
 
 namespace StockSync.ItemService.Controllers;
 
@@ -22,12 +23,14 @@ public class ItemsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ItemDto>>> GetItems([FromQuery] string? itemIds = null)
+    public async Task<ActionResult<PagedResult<ItemDto>>> GetItems(
+        [FromQuery] PaginationParams paginationParams,
+        [FromQuery] string? itemIds = null)
     {
-        var items = await _repository.GetItemsAsync(itemIds);
-        var itemsResponse = _mapper.Map<IEnumerable<ItemDto>>(items);
+        var pagedItems = await _repository.GetItemsAsync(itemIds, paginationParams);
+        var itemsResponse = _mapper.Map<IEnumerable<ItemDto>>(pagedItems.Items);
 
-        return Ok(itemsResponse);
+        return Ok(PagedResult<ItemDto>.Create(itemsResponse, pagedItems.PageNumber, pagedItems.PageSize, pagedItems.TotalCount));
     }
 
     [HttpGet("{id}", Name = "GetItem")]

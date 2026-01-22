@@ -1,10 +1,11 @@
-﻿using StockSync.SupplierService.Entities;
+﻿using StockSync.Shared.Models;
+using StockSync.SupplierService.Entities;
 
 namespace StockSync.SupplierService.Infrastructure;
 
 public interface ISupplierServiceRepository
 {
-    Task<IEnumerable<Supplier>> GetSuppliersAsync();
+    Task<PagedResult<Supplier>> GetSuppliersAsync(PaginationParams pagination);
     Task<Supplier?> GetSupplierAsync(int supplierId);
     Task AddSupplierAsync(Supplier supplier);
     Task UpdateSupplier(Supplier supplier);

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using StockSync.Shared.Models;
 using StockSync.SupplierService.Data;
 using StockSync.SupplierService.Entities;
 
@@ -13,18 +14,27 @@ public class SupplierServiceRepository : ISupplierServiceRepository
         _dbContext = dBContext ?? throw new ArgumentNullException(nameof(dBContext));
     }
 
+    public async Task<PagedResult<Supplier>> GetSuppliersAsync(PaginationParams pagination)
+    {
+        var query = _dbContext.Suppliers.AsQueryable();
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .AsNoTracking()
+            .OrderBy(s => s.Name)
+            .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+            .Take(pagination.PageSize)
+            .ToListAsync();
+
+        return PagedResult<Supplier>.Create(items, pagination.PageNumber, pagination.PageSize, totalCount);
+    }
+
     public async Task<Supplier?> GetSupplierAsync(int supplierId)
     {
         return await _dbContext.Suppliers
             .AsNoTracking()
             .FirstOrDefaultAsync(s => s.SupplierId == supplierId);
-    }
-
-    public async Task<IEnumerable<Supplier>> GetSuppliersAsync()
-    {
-        return await _dbContext.Suppliers
-            .AsNoTracking()
-            .ToListAsync();
     }
 
     public async Task AddSupplierAsync(Supplier supplier)

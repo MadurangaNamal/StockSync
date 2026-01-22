@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using StockSync.ItemService.Data;
 using StockSync.ItemService.Entities;
+using StockSync.Shared.Models;
 
 namespace StockSync.ItemService.Infrastructure;
 
@@ -17,26 +18,45 @@ public class ItemServiceRepository : IItemServiceRepository
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
+    public async Task<PagedResult<Item>> GetItemsAsync(string? itemIds, PaginationParams pagination)
+    {
+        var query = _dbContext.Items.AsQueryable();
+        var total = await query.CountAsync();
+
+
+        if (!string.IsNullOrEmpty(itemIds))
+        {
+
+            var ids = itemIds.Split(',').Select(id => id.Trim()).ToList();
+
+            var filteredQuery = query
+                .AsNoTracking()
+                .Where(item => ids.Contains(item.Id));
+
+            var filteredTotal = await filteredQuery.CountAsync();
+
+            var filteredItems = await filteredQuery
+                .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
+                .ToListAsync();
+
+            return PagedResult<Item>.Create(filteredItems, pagination.PageNumber, pagination.PageSize, filteredTotal);
+        }
+
+        var items = await query
+            .AsNoTracking()
+            .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+            .Take(pagination.PageSize)
+            .ToListAsync();
+
+        return PagedResult<Item>.Create(items, pagination.PageNumber, pagination.PageSize, total);
+    }
+
     public async Task<Item?> GetItemByIdAsync(string id)
     {
         return await _dbContext.Items
             .AsNoTracking()
             .FirstOrDefaultAsync(item => item.Id == id);
-    }
-
-    public async Task<IEnumerable<Item>> GetItemsAsync(string? itemIds)
-    {
-        if (!string.IsNullOrEmpty(itemIds))
-        {
-            var ids = itemIds.Split(',').Select(id => id.Trim()).ToList();
-
-            return await _dbContext.Items
-                .AsNoTracking()
-                .Where(item => ids.Contains(item.Id))
-                .ToListAsync();
-        }
-
-        return await _dbContext.Items.AsNoTracking().ToListAsync();
     }
 
     public async Task<Item> CreateItemAsync(Item item)

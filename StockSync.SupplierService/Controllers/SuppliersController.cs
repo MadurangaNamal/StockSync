@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StockSync.Shared.Models;
 using StockSync.SupplierService.Entities;
 using StockSync.SupplierService.Infrastructure;
 using StockSync.SupplierService.Models;
@@ -24,19 +25,18 @@ public class SuppliersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<SupplierDto>>> GetAllSuppliers()
+    public async Task<ActionResult<IEnumerable<SupplierDto>>> GetAllSuppliers([FromQuery] PaginationParams paginationParams)
     {
-        var allSuppliers = await _repository.GetSuppliersAsync() ?? [];
-        var supplierDtos = new List<SupplierDto>();
+        var pagedSuppliers = await _repository.GetSuppliersAsync(paginationParams);
 
-        foreach (var supplier in allSuppliers)
+        var supplierDtos = pagedSuppliers.Items.Select(supplier =>
         {
             var itemDtos = (supplier.Items ?? [])
                 .Select(itemId => _cacheService.GetItemDto(itemId))
                 .Where(item => item != null)
                 .ToList();
 
-            var dto = new SupplierDto(
+            return new SupplierDto(
                 supplier.SupplierId,
                 supplier.Name,
                 supplier.ContactEmail,
@@ -49,11 +49,9 @@ public class SuppliersController : ControllerBase
             {
                 Items = itemDtos!
             };
+        });
 
-            supplierDtos.Add(dto);
-        }
-
-        return Ok(supplierDtos);
+        return Ok(PagedResult<SupplierDto>.Create(supplierDtos, pagedSuppliers.PageNumber, pagedSuppliers.PageSize, pagedSuppliers.TotalCount));
     }
 
     [HttpGet("{id}", Name = "GetSupplierById")]
