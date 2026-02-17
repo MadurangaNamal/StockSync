@@ -82,7 +82,7 @@ public class SuppliersController : ControllerBase
 
     [Authorize(Policy = "RequireAdminOrUser")]
     [HttpPost]
-    public async Task<ActionResult<SupplierDto>> AddNewSupplier(SupplierManipulationDto supplierCreationDto)
+    public async Task<IActionResult> AddNewSupplier(SupplierManipulationDto supplierCreationDto)
     {
         var supplier = _mapper.Map<Supplier>(supplierCreationDto);
 
@@ -110,7 +110,7 @@ public class SuppliersController : ControllerBase
 
     [Authorize(Policy = "RequireAdministratorRole")]
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteSupplier(string id)
+    public async Task<IActionResult> DeleteSupplier(string id)
     {
         if (!int.TryParse(id, out int supplierId))
             return BadRequest($"Invalid supplier id format: {id}");

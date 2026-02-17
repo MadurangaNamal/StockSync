@@ -47,7 +47,7 @@ public class ItemsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ItemDto>> CreateItem(ItemManipulationDto itemDto)
+    public async Task<IActionResult> CreateItem(ItemManipulationDto itemDto)
     {
         if (itemDto == null)
             return BadRequest($"Invalid item data");
@@ -78,7 +78,7 @@ public class ItemsController : ControllerBase
 
     [Authorize(Policy = "RequireAdministratorRole")]
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteItem(string id)
+    public async Task<IActionResult> DeleteItem(string id)
     {
         if (await _repository.DeleteItemAsync(id))
             return NoContent();
