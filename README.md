@@ -33,7 +33,7 @@ This demonstrates modern development practices including service orchestration, 
 - Global exception handling
 - Supplier → Item relationship with **cached Item details** for fast reads
 - **Hangfire** scheduled jobs for periodic supplier-item synchronization
-- **In-memory + optional Redis distributed caching**
+- **In-memory + (optional) Redis distributed caching**
 - Full **observability** via OpenTelemetry (traces, metrics, logs)
 - Automatic health checks and resilience policies (via Aspire ServiceDefaults)
 - Docker containerization
