@@ -23,7 +23,7 @@ public class SupplierSyncServiceTests : IDisposable
     public SupplierSyncServiceTests()
     {
         var options = new DbContextOptionsBuilder<SupplierServiceDBContext>()
-            .UseInMemoryDatabase(databaseName: "StockSyncTestDb")
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
         _dbContext = new SupplierServiceDBContext(options);
@@ -260,7 +260,12 @@ public class SupplierSyncServiceTests : IDisposable
                 return new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent(JsonSerializer.Serialize(itemDtos))
+                    Content = new StringContent(JsonSerializer.Serialize(new PagedItemResponse
+                    {
+                        Items = itemDtos,
+                        PageNumber = 1,
+                        TotalCount = itemDtos.Count
+                    }))
                 };
             });
 
@@ -403,6 +408,10 @@ public class SupplierSyncServiceTests : IDisposable
         await _supplierSyncService.SyncSupplierItems(supplier.SupplierId);
 
         // Assert
+        var updatedSupplier = await _dbContext.Suppliers.FindAsync(supplier.SupplierId);
+        Assert.NotNull(updatedSupplier);
+        Assert.Equal(2, updatedSupplier.Items?.Count);
+
         _mockCacheService.Verify(x => x.SetAllItemDtos(It.IsAny<Dictionary<string, ItemDto>>(), It.IsAny<TimeSpan>()), Times.Never);
     }
 
@@ -443,7 +452,12 @@ public class SupplierSyncServiceTests : IDisposable
                 return new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent(JsonSerializer.Serialize(itemDtos))
+                    Content = new StringContent(JsonSerializer.Serialize(new PagedItemResponse
+                    {
+                        Items = itemDtos,
+                        PageNumber = 1,
+                        TotalCount = itemDtos.Count
+                    }))
                 };
             });
 
@@ -476,8 +490,13 @@ public class SupplierSyncServiceTests : IDisposable
             {
                 StatusCode = statusCode,
                 Content = responseData != null
-                    ? new StringContent(JsonSerializer.Serialize(responseData))
-                    : new StringContent("null")
+                ? new StringContent(JsonSerializer.Serialize(new PagedItemResponse
+                {
+                    Items = responseData,
+                    PageNumber = 1,
+                    TotalCount = responseData.Count
+                }))
+                : new StringContent("null")
             });
 
         return mockHttpMessageHandler;
