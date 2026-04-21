@@ -42,14 +42,12 @@ public class SupplierSyncService
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var items = await response.Content.ReadFromJsonAsync<List<ItemDto>>();
+                    var pagedResult = await response.Content.ReadFromJsonAsync<PagedItemResponse>();
 
-                    if (items != null)
+                    if (pagedResult?.Items != null && pagedResult.Items.Count > 0)
                     {
-                        // Update supplier.Items with valid IDs
-                        supplier.Items = items.Select(i => i.Id).ToList();
-                        var itemDict = items.ToDictionary(i => i.Id, i => i);
-
+                        supplier.Items = pagedResult.Items.Select(i => i.Id).ToList();
+                        var itemDict = pagedResult.Items.ToDictionary(i => i.Id, i => i);
                         _cacheService.SetAllItemDtos(itemDict, TimeSpan.FromHours(1));
                     }
 

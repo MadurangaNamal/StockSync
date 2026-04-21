@@ -66,12 +66,20 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(cfg => { }, typeof(Program));
 
 builder.Services.AddTransient<JwtAuthenticationHandler>();
-builder.Services.AddHttpClient("ItemServiceClient", (serviceProvider, client) =>
+
+//builder.Services.AddHttpClient("ItemServiceClient", (serviceProvider, client) =>
+//{
+//    var config = serviceProvider.GetRequiredService<IConfiguration>();
+//    client.BaseAddress = new Uri(config["ItemService:BaseUrl"]
+//        ?? throw new InvalidOperationException("BaseUrl not found"));
+//})
+//.AddHttpMessageHandler<JwtAuthenticationHandler>();
+
+builder.Services.AddHttpClient("ItemServiceClient", client =>
 {
-    var config = serviceProvider.GetRequiredService<IConfiguration>();
-    client.BaseAddress = new Uri(config["ItemService:BaseUrl"]
-        ?? throw new InvalidOperationException("BaseUrl not found"));
+    client.BaseAddress = new Uri("https+http://stocksync-itemservice");
 })
+.AddServiceDiscovery()
 .AddHttpMessageHandler<JwtAuthenticationHandler>();
 
 builder.Services.AddHangfire(config => config.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
