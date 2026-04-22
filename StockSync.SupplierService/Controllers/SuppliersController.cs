@@ -31,10 +31,10 @@ public class SuppliersController : ControllerBase
 
         var supplierDtos = pagedSuppliers.Items.Select(supplier =>
         {
-            var itemDtos = (supplier.Items ?? [])
-                .Select(itemId => _cacheService.GetItemDto(itemId))
-                .Where(item => item != null)
-                .ToList();
+            //var itemDtos = (supplier.Items ?? [])
+            //        .Select(itemId => _cacheService.GetItemDto(itemId))
+            //        .Where(item => item != null)
+            //        .ToList();
 
             return new SupplierDto(
                 supplier.SupplierId,
@@ -47,7 +47,8 @@ public class SuppliersController : ControllerBase
                 supplier.ZipCode,
                 supplier.Country)
             {
-                Items = itemDtos!
+                // Items = itemDtos!
+                Items = []
             };
         });
 
@@ -96,7 +97,10 @@ public class SuppliersController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<SupplierDto>> UpdateSupplier(string id, SupplierManipulationDto supplierUpdateDto)
     {
-        if (!await _repository.SupplierExistsAsync(int.Parse(id)))
+        if (!int.TryParse(id, out int supplierId))
+            return BadRequest($"Invalid supplier id format: {id}");
+
+        if (!await _repository.SupplierExistsAsync(supplierId))
             return NotFound($"Supplier with id: {id} not found");
 
         var supplier = await _repository.GetSupplierAsync(int.Parse(id));

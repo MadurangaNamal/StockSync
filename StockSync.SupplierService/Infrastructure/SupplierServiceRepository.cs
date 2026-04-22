@@ -17,7 +17,6 @@ public class SupplierServiceRepository : ISupplierServiceRepository
     public async Task<PagedResult<Supplier>> GetSuppliersAsync(PaginationParams pagination)
     {
         var query = _dbContext.Suppliers.AsQueryable();
-
         var totalCount = await query.CountAsync();
 
         var items = await query

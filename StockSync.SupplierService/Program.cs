@@ -20,11 +20,11 @@ builder.ConfigureSerilog();
 builder.Configuration.AddUserSecrets<Program>();
 
 /*
-var rawConnectionString = builder.Configuration.GetConnectionString("StockSyncDBConnection")
-    ?? throw new InvalidOperationException("Connection string 'StockSyncDBConnection' not found.");
-var dbPassword = builder.Configuration["DB_PASSWORD"]
-    ?? throw new InvalidOperationException("Database password not found in configuration.");
-var connectionString = rawConnectionString.Replace("{DB_PASSWORD}", dbPassword);
+    var rawConnectionString = builder.Configuration.GetConnectionString("StockSyncDBConnection")
+        ?? throw new InvalidOperationException("Connection string 'StockSyncDBConnection' not found.");
+    var dbPassword = builder.Configuration["DB_PASSWORD"]
+        ?? throw new InvalidOperationException("Database password not found in configuration.");
+    var connectionString = rawConnectionString.Replace("{DB_PASSWORD}", dbPassword);
 */
 
 var jwtSecretKey = builder.Configuration["JWT_SECRET_KEY"]
@@ -64,7 +64,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(cfg => { }, typeof(Program));
-
 builder.Services.AddTransient<JwtAuthenticationHandler>();
 
 //builder.Services.AddHttpClient("ItemServiceClient", (serviceProvider, client) =>
@@ -120,7 +119,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.SaveToken = true;
-        options.RequireHttpsMetadata = false;
+        options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
         options.TokenValidationParameters = tokenValidationParameters;
 
         options.Events = new JwtBearerEvents
@@ -177,7 +176,6 @@ try
     {
         var dbContext = scope.ServiceProvider.GetRequiredService<SupplierServiceDBContext>();
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-
         logger.LogInformation("Applying database migrations...");
 
         await dbContext.Database.MigrateAsync();
@@ -188,7 +186,6 @@ try
 catch (Exception ex)
 {
     var logger = app.Services.GetRequiredService<ILogger<Program>>();
-
     logger.LogError(ex, "An error occurred while applying database migrations");
 
     throw;
@@ -223,6 +220,7 @@ RecurringJob.AddOrUpdate<SupplierSyncService>(
     service => service.SyncAllSuppliers(),
     "*/5 * * * *");
 
-BackgroundJob.Enqueue<SupplierSyncService>(service => service.SyncAllSuppliers()); // Trigger once immediately on startup
+// Trigger once immediately on startup
+BackgroundJob.Enqueue<SupplierSyncService>(service => service.SyncAllSuppliers());
 
 await app.RunAsync();

@@ -35,7 +35,6 @@ public class JwtAuthenticationHandler : DelegatingHandler
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var tokenString = tokenHandler.WriteToken(token);
-
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
 
         return base.SendAsync(request, cancellationToken);

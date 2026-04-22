@@ -23,10 +23,8 @@ public class ItemServiceRepository : IItemServiceRepository
         var query = _dbContext.Items.AsQueryable();
         var total = await query.CountAsync();
 
-
         if (!string.IsNullOrEmpty(itemIds))
         {
-
             var ids = itemIds.Split(',').Select(id => id.Trim()).ToList();
 
             var filteredQuery = query

@@ -9,25 +9,18 @@ var sqlServer = builder.AddSqlServer("sqlserver")
 var mongo = builder.AddMongoDB("mongodb")
                    .WithDataVolume();
 
-/* Add Distributed caching (optional - not implemented */
-
-//var redis = builder.AddRedis("redis")
-//                   .WithRedisCommander();
-
-/* Local setup (without docker) */
+/* Local setup (without docker DB containers) */
 
 //var sqlServer = builder.AddConnectionString("sqlserver");
 //var mongo = builder.AddConnectionString("mongodb");
 
 var supplierService = builder.AddProject<Projects.StockSync_SupplierService>("stocksync-supplierservice")
                              .WithReference(sqlServer)
-                             //.WithReference(redis)
                              .WaitFor(sqlServer)
                              .WaitForCompletion(sqlServer);
 
 var itemService = builder.AddProject<Projects.StockSync_ItemService>("stocksync-itemservice")
                          .WithReference(mongo)
-                         //.WithReference(redis)
                          .WaitFor(mongo)
                          .WaitForCompletion(mongo);
 
