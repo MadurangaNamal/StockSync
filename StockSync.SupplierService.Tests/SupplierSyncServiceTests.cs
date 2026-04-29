@@ -14,6 +14,7 @@ namespace StockSync.SupplierService.Tests;
 public class SupplierSyncServiceTests : IDisposable
 {
     private bool _disposed;
+    private const string SampleBaseAddress = "http://testuri.com";
 
     private readonly SupplierServiceDBContext _dbContext;
     private readonly Mock<IHttpClientFactory> _mockHttpClientFactory;
@@ -77,7 +78,7 @@ public class SupplierSyncServiceTests : IDisposable
             Address = "Test S",
             ContactEmail = "Test M",
             ContactPhone = "Test P",
-            Items = new List<string>()
+            Items = []
         };
 
         await _dbContext.Suppliers.AddAsync(supplier);
@@ -113,6 +114,7 @@ public class SupplierSyncServiceTests : IDisposable
 
         // Assert
         _mockHttpClientFactory.Verify(x => x.CreateClient(It.IsAny<string>()), Times.Never);
+        _mockCacheService.Verify(x => x.SetAllItemDtos(It.IsAny<Dictionary<string, ItemDto>>(), It.IsAny<TimeSpan>()), Times.Never);
     }
 
     [Fact]
@@ -126,7 +128,7 @@ public class SupplierSyncServiceTests : IDisposable
             Address = "Test S",
             ContactEmail = "Test M",
             ContactPhone = "Test P",
-            Items = new List<string> { "1", "2", "3" }
+            Items = ["1", "2", "3"]
         };
 
         await _dbContext.Suppliers.AddAsync(supplier);
@@ -134,15 +136,16 @@ public class SupplierSyncServiceTests : IDisposable
 
         var itemDtos = new List<ItemDto>
         {
-            new ItemDto { Id = "1", Name = "Item 1" },
-            new ItemDto { Id = "2", Name = "Item 2" },
-            new ItemDto { Id = "3", Name = "Item 3" }
+            new() { Id = "1", Name = "Item 1" },
+            new() { Id = "2", Name = "Item 2" },
+            new() { Id = "3", Name = "Item 3" }
         };
 
+        // Mock the HTTP response to return the itemDtos
         var mockHttpMessageHandler = CreateMockHttpMessageHandler(HttpStatusCode.OK, itemDtos);
         var httpClient = new HttpClient(mockHttpMessageHandler.Object)
         {
-            BaseAddress = new Uri("http://testuri.com")
+            BaseAddress = new Uri(SampleBaseAddress)
         };
 
         _mockHttpClientFactory.Setup(x => x.CreateClient("ItemServiceClient")).Returns(httpClient);
@@ -177,7 +180,7 @@ public class SupplierSyncServiceTests : IDisposable
             Address = "Test S",
             ContactEmail = "Test M",
             ContactPhone = "Test P",
-            Items = new List<string> { "1", "2", "3", "4", "5" }
+            Items = ["1", "2", "3", "4", "5"]
         };
 
         await _dbContext.Suppliers.AddAsync(supplier);
@@ -185,15 +188,15 @@ public class SupplierSyncServiceTests : IDisposable
 
         var itemDtos = new List<ItemDto>
         {
-            new ItemDto { Id = "1", Name = "Item 1" },
-            new ItemDto { Id = "2", Name = "Item 2" },
-            new ItemDto { Id = "3", Name = "Item 3" }
+            new() { Id = "1", Name = "Item 1" },
+            new() { Id = "2", Name = "Item 2" },
+            new() { Id = "3", Name = "Item 3" }
         };
 
         var mockHttpMessageHandler = CreateMockHttpMessageHandler(HttpStatusCode.OK, itemDtos);
         var httpClient = new HttpClient(mockHttpMessageHandler.Object)
         {
-            BaseAddress = new Uri("http://testuri.com")
+            BaseAddress = new Uri(SampleBaseAddress)
         };
 
         _mockHttpClientFactory.Setup(x => x.CreateClient("ItemServiceClient")).Returns(httpClient);
@@ -230,7 +233,7 @@ public class SupplierSyncServiceTests : IDisposable
             Address = "Test S",
             ContactEmail = "Test M",
             ContactPhone = "Test P",
-            Items = new List<string> { "1", "2" }
+            Items = ["1", "2"]
         };
 
         await _dbContext.Suppliers.AddAsync(supplier);
@@ -238,8 +241,8 @@ public class SupplierSyncServiceTests : IDisposable
 
         var itemDtos = new List<ItemDto>
         {
-            new ItemDto { Id = "1", Name = "Item 1" },
-            new ItemDto { Id = "2", Name = "Item 2" },
+            new() { Id = "1", Name = "Item 1" },
+            new() { Id = "2", Name = "Item 2" },
         };
 
         var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
@@ -271,7 +274,7 @@ public class SupplierSyncServiceTests : IDisposable
 
         var httpClient = new HttpClient(mockHttpMessageHandler.Object)
         {
-            BaseAddress = new Uri("http://testuri.com")
+            BaseAddress = new Uri(SampleBaseAddress)
         };
 
         _mockHttpClientFactory.Setup(x => x.CreateClient("ItemServiceClient")).Returns(httpClient);
@@ -286,6 +289,8 @@ public class SupplierSyncServiceTests : IDisposable
         Assert.NotNull(updatedSupplier);
         Assert.NotNull(updatedSupplier.Items);
         Assert.Equal(2, updatedSupplier.Items.Count);
+        Assert.Contains("1", updatedSupplier.Items);
+        Assert.Contains("2", updatedSupplier.Items);
 
         _mockCacheService.Verify(x => x.SetAllItemDtos(
             It.Is<Dictionary<string, ItemDto>>(d => d.Count == 2),
@@ -304,7 +309,7 @@ public class SupplierSyncServiceTests : IDisposable
             Address = "Test S",
             ContactEmail = "Test M",
             ContactPhone = "Test P",
-            Items = new List<string> { "1" }
+            Items = ["1"]
         };
 
         await _dbContext.Suppliers.AddAsync(supplier);
@@ -320,14 +325,13 @@ public class SupplierSyncServiceTests : IDisposable
 
         var httpClient = new HttpClient(mockHttpMessageHandler.Object)
         {
-            BaseAddress = new Uri("http://testuri.com")
+            BaseAddress = new Uri(SampleBaseAddress)
         };
 
         _mockHttpClientFactory.Setup(x => x.CreateClient("ItemServiceClient")).Returns(httpClient);
 
-        // Act & Aeert
-        await Assert.ThrowsAsync<HttpRequestException>(() =>
-            _supplierSyncService.SyncSupplierItems(supplier.SupplierId));
+        // Act & Assert
+        await Assert.ThrowsAsync<HttpRequestException>(() => _supplierSyncService.SyncSupplierItems(supplier.SupplierId));
 
         _mockCacheService.Verify(x => x.SetAllItemDtos(It.IsAny<Dictionary<string, ItemDto>>(), It.IsAny<TimeSpan>()), Times.Never);
     }
@@ -343,7 +347,7 @@ public class SupplierSyncServiceTests : IDisposable
             Address = "Test S",
             ContactEmail = "Test M",
             ContactPhone = "Test P",
-            Items = new List<string> { "1" }
+            Items = ["1"]
         };
 
         await _dbContext.Suppliers.AddAsync(supplier);
@@ -362,7 +366,7 @@ public class SupplierSyncServiceTests : IDisposable
 
         var httpClient = new HttpClient(mockHttpMessageHandler.Object)
         {
-            BaseAddress = new Uri("http://testuri.com")
+            BaseAddress = new Uri(SampleBaseAddress)
         };
 
         _mockHttpClientFactory.Setup(x => x.CreateClient("ItemServiceClient")).Returns(httpClient);
@@ -372,6 +376,7 @@ public class SupplierSyncServiceTests : IDisposable
 
         // Assert
         var updatedSupplier = await _dbContext.Suppliers.FindAsync(supplier.SupplierId);
+
         Assert.NotNull(updatedSupplier);
         Assert.NotNull(updatedSupplier.Items);
         Assert.Single(updatedSupplier.Items); // Supplier items remains unchanged
@@ -390,7 +395,7 @@ public class SupplierSyncServiceTests : IDisposable
             Address = "Test S",
             ContactEmail = "Test M",
             ContactPhone = "Test P",
-            Items = new List<string> { "1", "2" }
+            Items = ["1", "2"]
         };
 
         await _dbContext.Suppliers.AddAsync(supplier);
@@ -399,7 +404,7 @@ public class SupplierSyncServiceTests : IDisposable
         var mockHttpMessageHandler = CreateMockHttpMessageHandler(HttpStatusCode.OK, null!);
         var httpClient = new HttpClient(mockHttpMessageHandler.Object)
         {
-            BaseAddress = new Uri("http://testuri.com")
+            BaseAddress = new Uri(SampleBaseAddress)
         };
 
         _mockHttpClientFactory.Setup(x => x.CreateClient("ItemServiceClient")).Returns(httpClient);
@@ -426,7 +431,7 @@ public class SupplierSyncServiceTests : IDisposable
             Address = "Test S",
             ContactEmail = "Test M",
             ContactPhone = "Test P",
-            Items = new List<string> { "111", "215" }
+            Items = ["111", "215"]
         };
 
         await _dbContext.Suppliers.AddAsync(supplier);
@@ -434,8 +439,8 @@ public class SupplierSyncServiceTests : IDisposable
 
         var itemDtos = new List<ItemDto>
         {
-            new ItemDto { Id = "111", Name = "Item ABC" },
-            new ItemDto { Id = "215", Name = "Item XYZ" },
+            new() { Id = "111", Name = "Item ABC" },
+            new() { Id = "215", Name = "Item XYZ" },
         };
 
         var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
@@ -463,7 +468,7 @@ public class SupplierSyncServiceTests : IDisposable
 
         var httpClient = new HttpClient(mockHttpMessageHandler.Object)
         {
-            BaseAddress = new Uri("http://testuri.com")
+            BaseAddress = new Uri(SampleBaseAddress)
         };
 
         _mockHttpClientFactory.Setup(x => x.CreateClient("ItemServiceClient")).Returns(httpClient);
